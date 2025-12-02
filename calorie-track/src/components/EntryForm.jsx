@@ -19,8 +19,7 @@ function EntryForm({ onAdd }) {
 
   // Calculate adjusted nutrition values based on quantity (only for weight units)
   const getAdjustedNutrition = (baseNutrition, inputQuantity) => {
-    console.log("I GOT HERE");
-    if (!selectedFood || selectedFood.type !== 'usda') {
+        if (!selectedFood || selectedFood.type !== 'usda') {
       return baseNutrition;
     }
     

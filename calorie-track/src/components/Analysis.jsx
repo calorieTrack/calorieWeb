@@ -1,30 +1,11 @@
 import React, { useMemo } from 'react';
-import { getCalorieGoal } from '../api';
-import { useState, useEffect } from 'react';
 import './Analysis.css';
 
 
-function Analysis({ entries }) {
-  const [CALORIE_GOAL, setCALORIE_GOAL] = useState(2000); // Default daily goal
-  
-  useEffect(() => {
-    getCalorieGoal()
-      .then(data => {
-        // Handle both object response { calorieGoal: number } and direct number
-        const goal = typeof data === 'object' && data !== null 
-          ? (data.calorieGoal ?? 2000)
-          : (data ?? 2000);
-        setCALORIE_GOAL(Number(goal) || 2000);
-      })
-      .catch(error => {
-        console.error('Failed to load calorie goal:', error);
-        setCALORIE_GOAL(2000); // Fallback to default
-      });
-  }, []);
-  
+function Analysis({ entries, calorieGoal = 2000 }) {
   const stats = useMemo(() => {
     const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
-    const goal = CALORIE_GOAL || 2000; // Ensure we have a valid number
+    const goal = Number(calorieGoal) > 0 ? Number(calorieGoal) : 2000;
     const remaining = goal - total;
     const percentage = goal > 0 ? Math.round((total / goal) * 100) : 0;
     
@@ -51,7 +32,7 @@ function Analysis({ entries }) {
       entryCount: entries.length,
       hasActualMacros: protein > 0 || fat > 0 || carbs > 0
     };
-  }, [entries, CALORIE_GOAL]); // Include CALORIE_GOAL in dependencies
+  }, [entries, calorieGoal]); // Recalculate when entries or goal changes
 
   const getStatusColor = (percentage) => {
     if (percentage < 80) return '#ffc107'; // Yellow - under goal
@@ -68,7 +49,7 @@ function Analysis({ entries }) {
         <div className="stat-card calorie-card">
           <div className="stat-header">Total Calories</div>
           <div className="stat-value">{stats.total}</div>
-          <div className="stat-subtext">Goal: {CALORIE_GOAL}</div>
+          <div className="stat-subtext">Goal: {Number(calorieGoal) || 2000}</div>
           
           <div className="progress-bar">
             <div 

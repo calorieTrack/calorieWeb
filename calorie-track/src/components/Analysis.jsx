@@ -1,13 +1,32 @@
 import React, { useMemo } from 'react';
+import { getCalorieGoal } from '../api';
+import { useState, useEffect } from 'react';
 import './Analysis.css';
 
+
 function Analysis({ entries }) {
-  const CALORIE_GOAL = 2000; // Default daily goal
+  const [CALORIE_GOAL, setCALORIE_GOAL] = useState(2000); // Default daily goal
+  
+  useEffect(() => {
+    getCalorieGoal()
+      .then(data => {
+        // Handle both object response { calorieGoal: number } and direct number
+        const goal = typeof data === 'object' && data !== null 
+          ? (data.calorieGoal ?? 2000)
+          : (data ?? 2000);
+        setCALORIE_GOAL(Number(goal) || 2000);
+      })
+      .catch(error => {
+        console.error('Failed to load calorie goal:', error);
+        setCALORIE_GOAL(2000); // Fallback to default
+      });
+  }, []);
   
   const stats = useMemo(() => {
     const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
-    const remaining = CALORIE_GOAL - total;
-    const percentage = Math.round((total / CALORIE_GOAL) * 100);
+    const goal = CALORIE_GOAL || 2000; // Ensure we have a valid number
+    const remaining = goal - total;
+    const percentage = goal > 0 ? Math.round((total / goal) * 100) : 0;
     
     // Calculate actual macros from entries (no estimation fallback)
     let protein = 0;
@@ -32,7 +51,7 @@ function Analysis({ entries }) {
       entryCount: entries.length,
       hasActualMacros: protein > 0 || fat > 0 || carbs > 0
     };
-  }, [entries]);
+  }, [entries, CALORIE_GOAL]); // Include CALORIE_GOAL in dependencies
 
   const getStatusColor = (percentage) => {
     if (percentage < 80) return '#ffc107'; // Yellow - under goal

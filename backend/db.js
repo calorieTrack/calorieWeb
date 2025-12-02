@@ -16,7 +16,8 @@ db.prepare(`
     email TEXT UNIQUE NOT NULL,
     displayName TEXT,
     createdAt TEXT NOT NULL,
-    updatedAt TEXT NOT NULL
+    updatedAt TEXT NOT NULL,
+    calorieGoal INTEGER DEFAULT 2000
   )
 `).run();
 

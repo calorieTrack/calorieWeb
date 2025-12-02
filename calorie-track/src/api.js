@@ -131,3 +131,21 @@ export const searchUSDAFoods = (query, limit = 10, dataTypes = null) => {
  */
 export const getAISuggestions = () =>
   apiFetch('/api/ai/aisuggestions');
+
+/**
+ * Get the current user's daily calorie goal.
+ * Returns: { calorieGoal: number }
+ */
+export const getCalorieGoal = () =>
+  apiFetch('/api/me/calories');
+
+/**
+ * Update the current user's daily calorie goal.
+ * Body: { newCalorieGoal: number }
+ * Returns: { calorieGoal: number }
+ */
+export const updateCalorieGoal = (calorieGoal) =>
+  apiFetch('/api/me/updatecalories', {
+    method: 'PUT',
+    body: JSON.stringify({ newCalorieGoal: calorieGoal }),
+  });

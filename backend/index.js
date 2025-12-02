@@ -95,6 +95,46 @@ app.get('/api/me', verifyIdToken, (req, res) => {
 });
 
 /**
+ * GET /api/me/calories
+ * Get current user's calorie goal
+ */
+app.get('/api/me/calories', verifyIdToken, (req, res) => {
+  const calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid);
+  res.json(calorieGoal || 1500);
+});
+
+/**
+ * PUT /api/me/updatecalories
+ * Update current user's calorie goal
+ * Body: { calorieGoal: number }
+ */
+app.put('/api/me/updatecalories', verifyIdToken, (req, res, next) => {
+  try {
+    const { newCalorieGoal } = req.body;
+    
+    if (newCalorieGoal === undefined || newCalorieGoal === null) {
+      return res.status(400).json({ error: 'calorieGoal is required' });
+    }
+    
+    const goalNumber = Number(newCalorieGoal);
+    if (isNaN(goalNumber) || goalNumber < 0) {
+      return res.status(400).json({ error: 'calorieGoal must be a positive number' });
+    }
+
+    const now = new Date().toISOString();
+    db.prepare(`
+      UPDATE users SET calorieGoal = ?, updatedAt = ? WHERE id = ?
+    `).run(goalNumber, now, req.user.uid);
+
+    // Return updated calorie goal
+    const updated = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid);
+    res.json(updated || { calorieGoal: goalNumber });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /api/entries?date=YYYY-MM-DD
  * Get today's entries for logged-in user
  */

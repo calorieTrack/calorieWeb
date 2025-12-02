@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './Analysis.css';
 
 function Analysis({ entries }) {
@@ -20,6 +21,25 @@ function Analysis({ entries }) {
       carbs += (entry.carbs || 0);
     }
     
+    // Prepare chart data based on existing color scheme
+    const chartData = [
+      { 
+        name: 'Protein', 
+        value: Math.round(protein * 10) / 10, 
+        color: 'rgba(255, 107, 107, 0.8)' 
+      },
+      { 
+        name: 'Fat', 
+        value: Math.round(fat * 10) / 10, 
+        color: 'rgba(255, 217, 61, 0.8)' 
+      },
+      { 
+        name: 'Carbs', 
+        value: Math.round(carbs * 10) / 10, 
+        color: 'rgba(107, 207, 127, 0.8)' 
+      }
+    ].filter(item => item.value > 0);
+    
     return {
       total,
       remaining,
@@ -28,7 +48,8 @@ function Analysis({ entries }) {
       fat: Math.round(fat * 10) / 10,
       carbs: Math.round(carbs * 10) / 10,
       entryCount: entries.length,
-      hasActualMacros: protein > 0 || fat > 0 || carbs > 0
+      hasActualMacros: protein > 0 || fat > 0 || carbs > 0,
+      chartData
     };
   }, [entries]);
 
@@ -85,6 +106,34 @@ function Analysis({ entries }) {
               <span className="macro-value">{stats.carbs}g</span>
             </div>
           </div>
+          {stats.hasActualMacros && stats.chartData.length > 0 && (
+            <div className="macronutrient-chart-container">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={stats.chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={70}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {stats.chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value) => `${value}g`}
+                    contentStyle={{ backgroundColor: '#333', borderColor: '#555', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle"/>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
           {!stats.hasActualMacros && stats.entryCount > 0 && (
             <div className="macro-note">*Add entries with USDA search or manual macro data for tracking</div>
           )}

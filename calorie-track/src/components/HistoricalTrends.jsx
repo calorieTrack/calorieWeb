@@ -11,7 +11,7 @@ function HistoricalTrends() {
   // Calculate date range
   const endDate = new Date();
   const startDate = new Date();
-  startDate.setDate(endDate.getDate() - dateRange);
+  startDate.setDate(endDate.getDate() - dateRange + 1);
 
   const formatDate = (date) => date.toISOString().slice(0, 10);
 

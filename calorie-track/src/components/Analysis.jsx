@@ -15,11 +15,9 @@ function Analysis({ entries, calorieGoal = 2000 }) {
     let carbs = 0;
 
     for (const entry of entries) {
-      if (entry.protein !== null && entry.protein !== undefined) {
-        protein += entry.protein;
-        fat += (entry.fat || 0);
-        carbs += (entry.carbs || 0);
-      }
+      protein += (entry.protein || 0);
+      fat += (entry.fat || 0);
+      carbs += (entry.carbs || 0);
     }
     
     return {

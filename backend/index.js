@@ -475,6 +475,7 @@ app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
       totalEntries: 0
     });
     totals.days = nutritionSummary.length;
+    totals.calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid).calorieGoal || 2000;
     const suggestions = await pollSuggestions(totals);
     console.log('Returning suggestions:', suggestions);
     res.json(suggestions);

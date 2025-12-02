@@ -13,14 +13,12 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 export const pollSuggestions = async (nutritionData) => {
   if (!GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY not configured');
-  }
-  console.log("hello");
-  console.log("nutritionData:", nutritionData);
+  }  
   const prompt = `
   You are a nutritionist. You are given a summary of a user's nutrition data. 
   You need to provide a personalized recommendation for the user based on the data.
   Nutrition Data Summary:
-  - Total Calories: ${nutritionData.totalCalories/nutritionData.days}
+  - Total Calories: ${nutritionData.totalCalories/nutritionData.days} (Goal: ${nutritionData.calorieGoal})
   - Total Protein: ${nutritionData.totalProtein/nutritionData.days}g
   - Total Fat: ${nutritionData.totalFat/nutritionData.days}g
   - Total Carbs: ${nutritionData.totalCarbs/nutritionData.days}g

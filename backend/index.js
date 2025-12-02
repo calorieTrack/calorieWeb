@@ -403,8 +403,38 @@ app.get('/api/foods/search/usda', verifyIdToken, async (req, res) => {
 
 app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
   try {
-    const { entries } = req.body;
-    const suggestions = await pollSuggestions(entries);
+    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const nutritionSummary = db.prepare(`
+      SELECT date, 
+             SUM(calories) as totalCalories, 
+             SUM(protein) as totalProtein,
+             SUM(fat) as totalFat,
+             SUM(carbs) as totalCarbs,
+             COUNT(*) as entryCount
+      FROM entries
+      WHERE userId = ? AND date BETWEEN ? AND ?
+      GROUP BY date
+      ORDER BY date DESC
+    `).all(req.user.uid, startDate, endDate);
+
+    const totals = nutritionSummary.reduce((acc, day) => {
+      return {
+        totalCalories: acc.totalCalories + (day.totalCalories || 0),
+        totalProtein: acc.totalProtein + (day.totalProtein || 0),
+        totalFat: acc.totalFat + (day.totalFat || 0),
+        totalCarbs: acc.totalCarbs + (day.totalCarbs || 0),
+        totalEntries: acc.totalEntries + (day.entryCount || 0)
+      };
+    }, {
+      totalCalories: 0,
+      totalProtein: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalEntries: 0
+    });
+    totals.days = nutritionSummary.length;
+    const suggestions = await pollSuggestions(totals);
     console.log('Returning suggestions:', suggestions);
     res.json(suggestions);
   } catch (error) {

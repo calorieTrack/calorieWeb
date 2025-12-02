@@ -5,6 +5,7 @@ import db from './db.js';
 import { auth } from './firebase.js';
 import { verifyIdToken, errorHandler } from './middleware.js';
 import { searchUSDAFoods, adjustNutrients } from './usda.js';
+import { pollSuggestions } from './ai.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -397,6 +398,18 @@ app.get('/api/foods/search/usda', verifyIdToken, async (req, res) => {
   } catch (error) {
     console.error('USDA search error:', error);
     res.status(500).json({ error: 'Failed to search USDA database' });
+  }
+});
+
+app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
+  try {
+    const { entries } = req.body;
+    const suggestions = await pollSuggestions(entries);
+    console.log('Returning suggestions:', suggestions);
+    res.json(suggestions);
+  } catch (error) {
+    console.error('AI suggestions error:', error);
+    res.status(500).json({ error: 'Failed to generate AI suggestions', message: error.message });
   }
 });
 

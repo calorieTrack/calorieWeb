@@ -23,6 +23,7 @@ import UserSettings from './components/UserSettings';
 import DateSelector from './components/DateSelector';
 import Analysis from './components/Analysis';
 import HistoricalTrends from './components/HistoricalTrends';
+import AISuggestions from './components/AISuggestions';
 import './App.css';
 
 function App() {
@@ -174,8 +175,17 @@ function App() {
               onCancel={() => setEditingId(null)}
             />
           ) : (
-            <EntryForm onAdd={handleSaveEntry} />
+            <div className="entry-form-ai-container">
+              <div className="entry-form-wrapper">
+                <EntryForm onAdd={handleSaveEntry} />
+              </div>
+              <div className="ai-suggestions-wrapper">
+                <AISuggestions entries={entries} />
+              </div>
+            </div>
           )}
+          
+          
 
           <EntryList
             entries={entries}

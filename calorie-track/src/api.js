@@ -124,3 +124,10 @@ export const searchUSDAFoods = (query, limit = 10, dataTypes = null) => {
   }
   return apiFetch(url);
 };
+
+/**
+ * Get AI nutrition suggestions based on user's last 7 days of nutrition data
+ * Returns: { suggestions: string, nutritionSummary: {...} }
+ */
+export const getAISuggestions = () =>
+  apiFetch('/api/ai/aisuggestions');

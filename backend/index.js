@@ -25,6 +25,7 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development',
     hasUSDAKey: !!process.env.USDA_API_KEY,
     hasFirebaseKey: !!process.env.FIREBASE_PRIVATE_KEY,
+    hasGeminiKey: !!process.env.GEMINI_API_KEY,
     port: process.env.PORT || 4000
   });
 });

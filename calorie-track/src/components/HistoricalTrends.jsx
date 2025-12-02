@@ -6,14 +6,18 @@ function HistoricalTrends({ calorieGoal }) {
   const [dateRange, setDateRange] = useState(7); // Default to 7 days
   const [summaryData, setSummaryData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [chartType, setChartType] = useState('calories'); // calories, macros, or combined
+  const [chartType, setChartType] = useState('calories'); // calories or macros
 
   // Calculate date range
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(endDate.getDate() - dateRange + 1);
-
   const formatDate = (date) => date.toISOString().slice(0, 10);
+
+  const formatDateLabel = (dateStr) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return `${day}/${month}`;
+  };
 
   useEffect(() => {
     loadTrendData();
@@ -79,7 +83,6 @@ function HistoricalTrends({ calorieGoal }) {
           <h3>
             {chartType === 'calories' && 'Daily Calories'}
             {chartType === 'macros' && 'Daily Macronutrients'}
-            {chartType === 'combined' && 'Daily Overview'}
           </h3>
           <div className="chart-controls">
             <button 
@@ -94,19 +97,13 @@ function HistoricalTrends({ calorieGoal }) {
             >
               Macros
             </button>
-            <button 
-              className={chartType === 'combined' ? 'active' : ''}
-              onClick={() => setChartType('combined')}
-            >
-              Combined
-            </button>
           </div>
         </div>
 
         <div className="chart-area">
           {chartType === 'calories' && (
             <div className="bar-chart">
-              {summaryData.map((day, index) => (
+              {summaryData.map((day) => (
                 <div key={day.date} className="chart-bar-container">
                   <div 
                     className="chart-bar calories-bar"
@@ -121,7 +118,7 @@ function HistoricalTrends({ calorieGoal }) {
                     <span className="bar-value">{day.totalCalories}</span>
                   </div>
                   <div className="chart-label">
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
+                    {formatDateLabel(day.date)}
                   </div>
                 </div>
               ))}
@@ -130,7 +127,7 @@ function HistoricalTrends({ calorieGoal }) {
 
           {chartType === 'macros' && (
             <div className="bar-chart">
-              {summaryData.map((day, index) => (
+              {summaryData.map((day) => (
                 <div key={day.date} className="chart-bar-container">
                   <div className="stacked-bar">
                     <div 
@@ -150,34 +147,7 @@ function HistoricalTrends({ calorieGoal }) {
                     />
                   </div>
                   <div className="chart-label">
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {chartType === 'combined' && (
-            <div className="combined-chart">
-              {summaryData.map((day, index) => (
-                <div key={day.date} className="combined-bar-container">
-                  <div className="combined-bar">
-                    <div 
-                      className="calories-line"
-                      style={{
-                        height: `${(day.totalCalories / maxCalories) * 200}px`,
-                        backgroundColor: '#007bff'
-                      }}
-                      title={`${day.totalCalories} calories`}
-                    />
-                  </div>
-                  <div className="macro-indicators">
-                    <div className="macro-dot protein-dot" title={`P: ${day.totalProtein}g`} />
-                    <div className="macro-dot fat-dot" title={`F: ${day.totalFat}g`} />
-                    <div className="macro-dot carbs-dot" title={`C: ${day.totalCarbs}g`} />
-                  </div>
-                  <div className="chart-label">
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
+                    {formatDateLabel(day.date)}
                   </div>
                 </div>
               ))}

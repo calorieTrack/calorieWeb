@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getSummary } from '../api';
 import './HistoricalTrends.css';
 
-function HistoricalTrends() {
+function HistoricalTrends({ calorieGoal }) {
   const [dateRange, setDateRange] = useState(7); // Default to 7 days
   const [summaryData, setSummaryData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ function HistoricalTrends() {
   const renderChart = () => {
     if (summaryData.length === 0) return null;
 
-    const maxCalories = Math.max(...summaryData.map(d => d.totalCalories), 2000);
+    const maxCalories = Math.max(...summaryData.map(d => d.totalCalories), calorieGoal);
     const maxMacro = Math.max(
       ...summaryData.map(d => Math.max(d.totalProtein, d.totalFat, d.totalCarbs)),
       100
@@ -112,8 +112,8 @@ function HistoricalTrends() {
                     className="chart-bar calories-bar"
                     style={{
                       height: `${(day.totalCalories / maxCalories) * 200}px`,
-                      backgroundColor: day.totalCalories > 2000 ? '#dc3545' : 
-                                     day.totalCalories > 1600 ? '#28a745' : 
+                      backgroundColor: day.totalCalories > calorieGoal ? '#dc3545' : 
+                                     day.totalCalories > ((calorieGoal * 3) / 4) ? '#28a745' : 
                                      day.totalCalories > 0 ? '#ffc107' : '#e9ecef'
                     }}
                     title={`${day.totalCalories} calories on ${day.date}`}
@@ -191,15 +191,15 @@ function HistoricalTrends() {
             <div className="legend-items">
               <span className="legend-item">
                 <span className="legend-color" style={{ backgroundColor: '#28a745' }}></span>
-                On Track (1600-2000 cal)
+                On Track
               </span>
               <span className="legend-item">
                 <span className="legend-color" style={{ backgroundColor: '#ffc107' }}></span>
-                Under Goal (&lt;1600 cal)
+                Under Goal (&lt;75% of goal)
               </span>
               <span className="legend-item">
                 <span className="legend-color" style={{ backgroundColor: '#dc3545' }}></span>
-                Over Goal (&gt;2000 cal)
+                Over Goal (&gt;{calorieGoal} cal)
               </span>
             </div>
           )}

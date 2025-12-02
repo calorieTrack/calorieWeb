@@ -184,7 +184,9 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Calorie Track</h1>
+      <h1 onClick={() => setShowTrends(false)}
+        style={{ cursor: 'pointer'}}
+        >Calorie Track</h1>
       <UserHeader 
         user={user} 
         onSignOut={handleSignOut} 
@@ -196,13 +198,6 @@ function App() {
         <UserSettings
           user={user}
           calorieGoal={calorieGoal}
-          // The onUpdateCalorieGoal prop sends the handleCalorieGoalUpdate function from App into UserSettings.
-          // Inside UserSettings, when the user enters a new calorie goal and clicks "Update Goal", 
-          // UserSettings calls onUpdateCalorieGoal(goalNumber). This triggers handleCalorieGoalUpdate in App,
-          // which handles updating the calorie goal in App's state (and likely in the backend/database).
-          // Once updated, App passes the latest calorieGoal value back into UserSettings as the calorieGoal prop,
-          // keeping the UI in sync. This flow allows UserSettings to update app-level user settings through callbacks
-          // managed in the top-level App component.
           onUpdateCalorieGoal={saveUserCalorieGoal}
           onClose={() => setShowSettings(false)}
         />
@@ -232,9 +227,6 @@ function App() {
               </div>
             </div>
           )}
-          
-          
-
           <EntryList
             entries={entries}
             onEdit={setEditingId}

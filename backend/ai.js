@@ -28,7 +28,8 @@ export const pollSuggestions = async (nutritionData) => {
   - There should be 3-5 recommendations of food.
   - The recommendations should be listed in fewer than 75 words.
   - The recommendations should be in a easy to understand format.
-  - Do not include asterisks or other formatting, just raw text`;
+  - Do not include asterisks or other formatting, just raw text
+  - Mention that the nutrition data is average over the week, not just today's data`;
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-lite",

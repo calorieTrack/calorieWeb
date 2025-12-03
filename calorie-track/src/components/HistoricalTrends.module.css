@@ -1,5 +1,5 @@
-/* Historical Trends Component Styles */
-.historical-trends {
+/* Historical Trends Component Styles (CSS Module) */
+.historicalTrends {
   margin: 2rem 0;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.05);
@@ -7,7 +7,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.trends-header {
+.trendsHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,23 +16,23 @@
   gap: 1rem;
 }
 
-.trends-header h2 {
+.trendsHeader h2 {
   color: inherit;
   margin: 0;
 }
 
-.date-range-selector {
+.dateRangeSelector {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.date-range-selector label {
+.dateRangeSelector label {
   font-weight: 600;
   color: inherit;
 }
 
-.date-range-selector select {
+.dateRangeSelector select {
   padding: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
@@ -41,14 +41,14 @@
   font-size: 0.9rem;
 }
 
-.chart-container {
+.chartContainer {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   padding: 1.5rem;
   margin: 2rem 0;
 }
 
-.chart-header {
+.chartHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,17 +57,17 @@
   gap: 1rem;
 }
 
-.chart-header h3 {
+.chartHeader h3 {
   color: inherit;
   margin: 0;
 }
 
-.chart-controls {
+.chartControls {
   display: flex;
   gap: 0.5rem;
 }
 
-.chart-controls button {
+.chartControls button {
   padding: 0.5rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
@@ -79,26 +79,26 @@
   font-weight: 600;
 }
 
-.chart-controls button:hover {
+.chartControls button:hover {
   border-color: #646cff;
   background: rgba(100, 108, 255, 0.1);
 }
 
-.chart-controls button.active {
-  background: #646cff;
-  border-color: #646cff;
-  color: #ffffff;
+.active {
+  background: #646cff !important;
+  border-color: #646cff !important;
+  color: #ffffff !important;
 }
 
-.chart-area {
+.chartArea {
   min-height: 250px;
   padding: 1rem 0;
   overflow-x: auto;
 }
 
 /* Bar Chart Styles */
-.bar-chart,
-.combined-chart {
+.barChart,
+.combinedChart {
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
@@ -109,8 +109,8 @@
   position: relative;
 }
 
-.chart-bar-container,
-.combined-bar-container {
+.chartBarContainer,
+.combinedBarContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,7 +119,7 @@
   max-width: 80px;
 }
 
-.chart-bar {
+.chartBar {
   width: 100%;
   min-height: 2px;
   border-radius: 4px 4px 0 0;
@@ -131,27 +131,26 @@
   position: relative;
 }
 
-.chart-bar:hover {
+.chartBar:hover {
   opacity: 0.8;
   transform: translateY(-2px);
 }
 
-.bar-value {
+.barValue {
   position: absolute;
   top: -20px;
   font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
-  /* Deprecated: replaced by HistoricalTrends.module.css (CSS Modules). */
   white-space: nowrap;
 }
 
-.calories-bar {
+.caloriesBar {
   background-color: #646cff;
 }
 
 /* Stacked Bar for Macros */
-.stacked-bar {
+.stackedBar {
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
@@ -159,7 +158,7 @@
   gap: 2px;
 }
 
-.bar-segment {
+.barSegment {
   width: 100%;
   min-height: 2px;
   border-radius: 2px;
@@ -167,65 +166,65 @@
   cursor: pointer;
 }
 
-.bar-segment:hover {
+.barSegment:hover {
   opacity: 0.8;
 }
 
-.protein-bar,
-.protein-color {
+.proteinBar,
+.proteinColor {
   background-color: #ff6b6b;
 }
 
-.fat-bar,
-.fat-color {
+.fatBar,
+.fatColor {
   background-color: #ffd93d;
 }
 
-.carbs-bar,
-.carbs-color {
+.carbsBar,
+.carbsColor {
   background-color: #6bcf7f;
 }
 
 /* Combined Chart */
-.combined-bar {
+.combinedBar {
   width: 100%;
   position: relative;
 }
 
-.calories-line {
+.caloriesLine {
   width: 100%;
   min-height: 2px;
   border-radius: 4px 4px 0 0;
   transition: all 0.3s ease;
 }
 
-.macro-indicators {
+.macroIndicators {
   display: flex;
   gap: 3px;
   margin-top: 4px;
   justify-content: center;
 }
 
-.macro-dot {
+.macroDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
 }
 
-.protein-dot {
+.proteinDot {
   background-color: #ff6b6b;
 }
 
-.fat-dot {
+.fatDot {
   background-color: #ffd93d;
 }
 
-.carbs-dot {
+.carbsDot {
   background-color: #6bcf7f;
 }
 
 /* Chart Labels */
-.chart-label {
+.chartLabel {
   margin-top: 0.5rem;
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
@@ -234,21 +233,21 @@
 }
 
 /* Chart Legend */
-.chart-legend {
+.chartLegend {
   margin-top: 1.5rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
 }
 
-.legend-items {
+.legendItems {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: center;
 }
 
-.legend-item {
+.legendItem {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -256,14 +255,14 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-.legend-color {
+.legendColor {
   width: 16px;
   height: 16px;
   border-radius: 3px;
   display: inline-block;
 }
 
-.trend-summary {
+.trendSummary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
@@ -273,52 +272,52 @@
   border-radius: 8px;
 }
 
-.summary-stat {
+.summaryStat {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.stat-label {
+.statLabel {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 0.25rem;
 }
 
-.stat-value {
+.statValue {
   font-size: 1.2rem;
   font-weight: 700;
   color: inherit;
 }
 
 /* Detailed Data Table */
-.trend-table {
+.trendTable {
   margin-top: 2rem;
 }
 
-.trend-table h4 {
+.trendTable h4 {
   margin-bottom: 1rem;
   color: inherit;
 }
 
-.table-container {
+.tableContainer {
   overflow-x: auto;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
 }
 
-.trend-table table {
+.trendTable table {
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
 }
 
-.trend-table thead {
+.trendTable thead {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.trend-table th {
+.trendTable th {
   padding: 0.75rem;
   text-align: left;
   font-weight: 600;
@@ -326,161 +325,84 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.trend-table td {
+.trendTable td {
   padding: 0.75rem;
   color: rgba(255, 255, 255, 0.8);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.trend-table tbody tr:hover {
+.trendTable tbody tr:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.trend-table tbody tr:last-child td {
+.trendTable tbody tr:last-child td {
   border-bottom: none;
 }
 
+.loadingMessage {
+  color: inherit;
+}
+
+.emptyMessage {
+  color: inherit;
+}
+
 @media (prefers-color-scheme: light) {
-  .historical-trends {
+  .historicalTrends {
     background: #ffffff;
     border: 1px solid #e5e7eb;
   }
 
-  .date-range-selector select {
+  .dateRangeSelector select {
     border: 2px solid #e5e7eb;
     background: #fff;
     color: #374151;
   }
 
-  .chart-container {
+  .chartContainer {
     background: #f9fafb;
   }
 
-  .chart-controls button {
+  .chartControls button {
     border: 2px solid #e5e7eb;
     background: #fff;
     color: #6b7280;
   }
 
-  .chart-controls button:hover {
+  .chartControls button:hover {
     border-color: #3b82f6;
     color: #3b82f6;
   }
 
-  .chart-controls button.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: #fff;
+  .active {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #fff !important;
   }
 
-  .trend-summary {
+  .trendSummary {
     background: #f8fafc;
   }
 
-  .stat-label {
+  .statLabel {
     color: #6b7280;
   }
 
-  .table-container {
+  .tableContainer {
     background: #ffffff;
   }
 
-  .trend-table thead {
+  .trendTable thead {
     background: #f3f4f6;
   }
 
-  .trend-table th {
+  .trendTable th {
     color: #374151;
     border-bottom: 2px solid #d1d5db;
   }
 
-  .trend-table td {
+  .trendTable td {
     color: #6b7280;
     border-bottom: 1px solid #f3f4f6;
-  }
-
-  .trend-table tbody tr:hover {
-    background: #f9fafb;
-  }
-
-  .bar-chart,
-  .combined-chart {
-    border-bottom: 2px solid #e5e7eb;
-  }
-
-  .chart-label {
-    color: #6b7280;
-  }
-
-  .bar-value {
-    color: #374151;
-  }
-
-  .legend-item {
-    color: #6b7280;
-  }
-
-  .chart-legend {
-    background: #f8fafc;
-  }
-}
-
-/* Loading State */
-.loading-message {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  margin: 1rem 0;
-  font-style: italic;
-}
-
-@media (prefers-color-scheme: light) {
-  .loading-message {
-    color: #6b7280;
-    background: #f8fafc;
-  }
-}
-
-/* Empty State */
-.empty-message {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  margin: 1rem 0;
-  font-style: italic;
-}
-
-@media (prefers-color-scheme: light) {
-  .empty-message {
-    color: #6b7280;
-    background: #f8fafc;
-  }
-}
-
-@media (max-width: 640px) {
-  .trends-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .trend-summary {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .chart-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .chart-controls {
-    justify-content: center;
-  }
-  
-  .table-container {
-    overflow-x: auto;
   }
 }

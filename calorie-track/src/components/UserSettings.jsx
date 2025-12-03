@@ -165,10 +165,6 @@ function UserSettings({ user, onClose }) {
             </button>
           </div>
         </form>
-
-        <button className="settings-close-btn" onClick={onClose}>
-          Close Settings
-        </button>
       </div>
     </div>
   );

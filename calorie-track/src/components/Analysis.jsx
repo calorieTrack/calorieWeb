@@ -140,6 +140,39 @@ function Analysis({ entries }) {
               })}
             </div>
           </div>
+          {stats.hasActualMacros && stats.chartData.length > 0 && (
+            <div className="macronutrient-chart-container">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={stats.chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={70}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {stats.chartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                        onMouseEnter={() => setHoveredSlice(entry.name)}
+                        onMouseLeave={() => setHoveredSlice(null)}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value) => `${value}g`}
+                    contentStyle={{ backgroundColor: '#333', borderColor: '#555', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle"/>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
           {!stats.hasActualMacros && stats.entryCount > 0 && (
             <div className={styles.macroNote}>*Add entries with USDA search or manual macro data for tracking</div>
           )}

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import styles from './Analysis.module.css';
 
@@ -59,6 +59,8 @@ function Analysis({ entries }) {
     return '#dc3545'; // Red - over goal
   };
 
+  const [hoveredSlice, setHoveredSlice] = useState(null);
+
   return (
     <div className={styles.container}>
       <h2>Daily Analysis</h2>
@@ -108,9 +110,14 @@ function Analysis({ entries }) {
                       dataKey="value"
                       stroke="none"
                     >
-                      {stats.chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                        {stats.chartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.color}
+                            onMouseEnter={() => setHoveredSlice(entry.name)}
+                            onMouseLeave={() => setHoveredSlice(null)}
+                          />
+                        ))}
                     </Pie>
                     <Tooltip 
                       formatter={(value) => `${value}g`}
@@ -122,18 +129,15 @@ function Analysis({ entries }) {
               </div>
             )}
             <div className={styles.macroItemsWrapper}>
-              <div className={styles.macroItem}>
-                <span className={styles.macroLabel}>Protein</span>
-                <span className={styles.macroValue}>{stats.protein}g</span>
-              </div>
-              <div className={styles.macroItem}>
-                <span className={styles.macroLabel}>Fat</span>
-                <span className={styles.macroValue}>{stats.fat}g</span>
-              </div>
-              <div className={styles.macroItem}>
-                <span className={styles.macroLabel}>Carbs</span>
-                <span className={styles.macroValue}>{stats.carbs}g</span>
-              </div>
+              {['Protein', 'Fat', 'Carbs'].map((name) => {
+                const isHighlighted = hoveredSlice === name;
+                return (
+                  <div key={name} className={`${styles.macroItem} ${isHighlighted ? styles.highlight : ''}`}>
+                    <span className={styles.macroLabel}>{name}</span>
+                    <span className={styles.macroValue}>{stats[name.toLowerCase()]}g</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
           {stats.hasActualMacros && stats.chartData.length > 0 && (
@@ -151,7 +155,12 @@ function Analysis({ entries }) {
                     stroke="none"
                   >
                     {stats.chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                        onMouseEnter={() => setHoveredSlice(entry.name)}
+                        onMouseLeave={() => setHoveredSlice(null)}
+                      />
                     ))}
                   </Pie>
                   <Tooltip 

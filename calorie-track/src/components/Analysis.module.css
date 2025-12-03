@@ -112,13 +112,11 @@
   flex-direction: column;
   gap: 0.35rem;
   flex-shrink: 0;
-
   justify-content: space-between;
 }
 
 .macroContent:not(:has(.macronutrientChartContainer)) .macroItem {
   flex: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import './Analysis.css';
+import styles from './Analysis.module.css';
 
 function Analysis({ entries }) {
   const CALORIE_GOAL = 2000; // Default daily goal
@@ -60,19 +60,20 @@ function Analysis({ entries }) {
   };
 
   return (
-    <div className="analysis-section">
+    <div className={styles.container}>
       <h2>Daily Analysis</h2>
       
-      <div className="stats-grid">
+      <div className={styles.statsGrid}>
         {/* Calorie Summary */}
-        <div className="stat-card calorie-card">
-          <div className="stat-header">Total Calories</div>
-          <div className="stat-value">{stats.total}</div>
-          <div className="stat-subtext">Goal: {CALORIE_GOAL}</div>
+        <div className={`${styles.statCard} ${styles.calorieCard}`}>
+          <div className={styles.statHeader}>Total Calories</div>
+          <div className={styles.statValue}>{stats.total}</div>
+          <div className={styles.statSubtext}>Goal: {CALORIE_GOAL}</div>
           
-          <div className="progress-bar">
+          <div className={styles.progressBar}>
             <div 
-              className="progress-fill"
+              className={styles.progressFill}
+              data-testid="progress-fill"
               style={{
                 width: `${Math.min(stats.percentage, 100)}%`,
                 backgroundColor: getStatusColor(stats.percentage)
@@ -80,30 +81,59 @@ function Analysis({ entries }) {
             />
           </div>
           
-          <div className="stat-footer">
+          <div className={styles.statFooter}>
             {stats.remaining > 0 ? (
-              <span className="remaining-positive">{stats.remaining} cal remaining</span>
+              <span className={styles.remainingPositive}>{stats.remaining} cal remaining</span>
             ) : (
-              <span className="remaining-negative">{Math.abs(stats.remaining)} cal over</span>
+              <span className={styles.remainingNegative}>{Math.abs(stats.remaining)} cal over</span>
             )}
           </div>
         </div>
 
         {/* Macro Breakdown */}
-        <div className="stat-card macro-card">
-          <div className="stat-header">Macronutrients</div>
-          <div className="macro-row">
-            <div className="macro-item">
-              <span className="macro-label">Protein</span>
-              <span className="macro-value">{stats.protein}g</span>
-            </div>
-            <div className="macro-item">
-              <span className="macro-label">Fat</span>
-              <span className="macro-value">{stats.fat}g</span>
-            </div>
-            <div className="macro-item">
-              <span className="macro-label">Carbs</span>
-              <span className="macro-value">{stats.carbs}g</span>
+        <div className={`${styles.statCard} ${styles.macroCard}`}>
+          <div className={styles.statHeader}>Macronutrients</div>
+          <div className={styles.macroContent}>
+            {stats.hasActualMacros && stats.chartData.length > 0 && (
+              <div className={styles.macronutrientChartContainer}>
+                <ResponsiveContainer width="100%" aspect={1.0}>
+                  <PieChart>
+                    <Pie
+                      data={stats.chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={65}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {stats.chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => `${value}g`}
+                      contentStyle={{ backgroundColor: '#333', borderColor: '#555', borderRadius: '8px', color: '#fff' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+            <div className={styles.macroItemsWrapper}>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Protein</span>
+                <span className={styles.macroValue}>{stats.protein}g</span>
+              </div>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Fat</span>
+                <span className={styles.macroValue}>{stats.fat}g</span>
+              </div>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Carbs</span>
+                <span className={styles.macroValue}>{stats.carbs}g</span>
+              </div>
             </div>
           </div>
           {stats.hasActualMacros && stats.chartData.length > 0 && (
@@ -135,27 +165,30 @@ function Analysis({ entries }) {
             </div>
           )}
           {!stats.hasActualMacros && stats.entryCount > 0 && (
-            <div className="macro-note">*Add entries with USDA search or manual macro data for tracking</div>
+            <div className={styles.macroNote}>*Add entries with USDA search or manual macro data for tracking</div>
           )}
           {stats.hasActualMacros && (
-            <div className="macro-note">*Based on entered nutrition data</div>
+            <div className={styles.macroNote}>*Based on entered nutrition data</div>
           )}
         </div>
 
         {/* Quick Stats */}
-        <div className="stat-card quick-stats">
-          <div className="stat-header">Quick Stats</div>
-          <div className="quick-stat-row">
+        <div className={`${styles.statCard} ${styles.quickStats}`}>
+          <div className={styles.statHeader}>Quick Stats</div>
+          <div className={styles.quickStatRow}>
             <span>Entries Today:</span>
-            <span className="stat-value-small">{stats.entryCount}</span>
+            <span className={styles.statValueSmall} data-testid="quick-entry-count">{stats.entryCount}</span>
           </div>
-          <div className="quick-stat-row">
+          <div className={styles.quickStatRow}>
             <span>Goal Progress:</span>
-            <span className="stat-value-small">{stats.percentage}%</span>
+            <span className={styles.statValueSmall}>{stats.percentage}%</span>
           </div>
-          <div className="quick-stat-row">
+          <div className={styles.quickStatRow}>
             <span>Status:</span>
-            <span className={`status-badge ${stats.percentage < 80 ? 'under' : stats.percentage <= 110 ? 'on-track' : 'over'}`}>
+            <span 
+              className={`${styles.statusBadge} ${stats.percentage < 80 ? styles.under : stats.percentage <= 110 ? styles.onTrack : styles.over}`}
+              data-testid="status-badge"
+            >
               {stats.percentage < 80 ? 'Under Goal' : stats.percentage <= 110 ? 'On Track' : 'Over Goal'}
             </span>
           </div>
@@ -163,7 +196,7 @@ function Analysis({ entries }) {
       </div>
 
       {entries.length === 0 && (
-        <div className="empty-message">
+        <div className={styles.emptyMessage}>
           No entries for this day. Add your first entry to see analysis!
         </div>
       )}

@@ -198,6 +198,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: inherit;
+  align-self: center;
 }
 
 .macroItem:nth-child(1) .macroLabel,
@@ -379,7 +380,7 @@
   }
 
   .macroValue {
-    align-self: flex-start !important;
+    align-self: flex-end !important;
   }
   /* Remove the fixed height used for side-by-side layout so the stacked
      (column) layout on small screens doesn't leave empty space below

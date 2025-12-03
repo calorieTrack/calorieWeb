@@ -3,11 +3,11 @@ import { getFoodSuggestions } from '../api';
 import './EditEntryForm.css';
 
 function EditEntryForm({ entry, onSave, onCancel }) {
-  console.log('EditEntryForm entry data:', entry); // Debug log
+//  console.log('EditEntryForm entry data:', entry); // Debug log
   
-  const [name, setName] = useState(entry.name);
-  const [quantity, setQuantity] = useState(entry.quantity);
-  const [calories, setCalories] = useState(entry.calories);
+  const [name, setName] = useState(entry.name || '');
+  const [quantity, setQuantity] = useState(entry.quantity || '');
+  const [calories, setCalories] = useState(entry.calories || '');
   const [protein, setProtein] = useState(entry.protein || 0);
   const [fat, setFat] = useState(entry.fat || 0);
   const [carbs, setCarbs] = useState(entry.carbs || 0);
@@ -20,10 +20,11 @@ function EditEntryForm({ entry, onSave, onCancel }) {
       const fetchSuggestions = async () => {
         try {
           const results = await getFoodSuggestions(name, 5);
-          setSuggestions(results);
+          setSuggestions(Array.isArray(results) ? results : []);
           setShowSuggestions(true);
         } catch (error) {
           console.warn('Failed to fetch suggestions:', error);
+          setSuggestions([]);
         }
       };
 

@@ -90,7 +90,7 @@
   gap: 1rem;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   flex: 1; /* fill remaining space in macro card */
 }
 
@@ -103,7 +103,8 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: 0.75rem;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .macroItemsWrapper {
@@ -111,13 +112,11 @@
   flex-direction: column;
   gap: 0.35rem;
   flex-shrink: 0;
-  min-width: 100px;
   justify-content: space-between;
 }
 
 .macroContent:not(:has(.macronutrientChartContainer)) .macroItem {
   flex: 1;
-  min-width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,9 +129,10 @@
 .macroItem {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   flex: 1;
   min-width: 50px;
+  width: 100%;
   padding: 0.35rem 0.5rem;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -153,11 +153,43 @@
   border-color: rgba(107, 207, 127, 0.3);
 }
 
+/* Highlight state when corresponding chart slice is hovered */
+.highlight {
+  transform: translateX(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  border-color: rgba(255,255,255,0.18);
+}
+
+/* Show emoji inline before the value so emoji and value are horizontal */
+.macroValue {
+  display: block; /* place value on its own line under the label */
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: inherit;
+  margin-top: 0.15rem; /* small gap under the label */
+  align-self: flex-start; /* align left within the macroItem */
+}
+
+/* spacing for the decorative emoji placed before the value */
+.macroValue::before {
+  display: inline-block;
+  margin-right: 0.4rem;
+}
+
+.macroItem:nth-child(1) .macroValue::before { content: "🥩"; font-size: 1rem; }
+.macroItem:nth-child(2) .macroValue::before { content: "🧈"; font-size: 1rem; }
+.macroItem:nth-child(3) .macroValue::before { content: "🌾"; font-size: 1rem; }
+
 .macroLabel {
   font-size: 0.65rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 0.1rem;
   font-weight: 500;
+}
+
+.macroContent:has(.macronutrientChartContainer) .macroValue {
+  align-self: flex-end;
 }
 
 .macroValue {
@@ -322,23 +354,39 @@
     align-items: stretch;
   }
 
+  /* Layout three macro items in a horizontal row on small screens */
   .macroItemsWrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    justify-content: space-between;
     width: 100%;
-    justify-content: space-around;
-  }
-
-  .macronutrientChartContainer {
-    max-width: 220px;
-    margin: 1rem auto 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .macroItemsWrapper {
-    flex-direction: column;
   }
 
   .macroItem {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: calc((100% - 2 * 0.75rem) / 3);
+    width: auto;
+    padding: 0.35rem 0.5rem;
+    height: fit-content;
+  }
+
+  .macroValue {
+    align-self: flex-start !important;
+  }
+  /* Remove the fixed height used for side-by-side layout so the stacked
+     (column) layout on small screens doesn't leave empty space below
+     the three items when a chart is present. */
+  .macroContent:has(.macronutrientChartContainer) .macroItemsWrapper {
+    height: auto;
+  }
+  .macronutrientChartContainer {
+    max-width: 220px;
+    margin: 1rem auto 0;
   }
 }

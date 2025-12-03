@@ -93,48 +93,49 @@ function Analysis({ entries }) {
         {/* Macro Breakdown */}
         <div className={`${styles.statCard} ${styles.macroCard}`}>
           <div className={styles.statHeader}>Macronutrients</div>
-          <div className={styles.macroRow}>
-            <div className={styles.macroItem}>
-              <span className={styles.macroLabel}>Protein</span>
-              <span className={styles.macroValue}>{stats.protein}g</span>
-            </div>
-            <div className={styles.macroItem}>
-              <span className={styles.macroLabel}>Fat</span>
-              <span className={styles.macroValue}>{stats.fat}g</span>
-            </div>
-            <div className={styles.macroItem}>
-              <span className={styles.macroLabel}>Carbs</span>
-              <span className={styles.macroValue}>{stats.carbs}g</span>
+          <div className={styles.macroContent}>
+            {stats.hasActualMacros && stats.chartData.length > 0 && (
+              <div className={styles.macronutrientChartContainer}>
+                <ResponsiveContainer width="100%" aspect={1.0}>
+                  <PieChart>
+                    <Pie
+                      data={stats.chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={65}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {stats.chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => `${value}g`}
+                      contentStyle={{ backgroundColor: '#333', borderColor: '#555', borderRadius: '8px', color: '#fff' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+            <div className={styles.macroItemsWrapper}>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Protein</span>
+                <span className={styles.macroValue}>{stats.protein}g</span>
+              </div>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Fat</span>
+                <span className={styles.macroValue}>{stats.fat}g</span>
+              </div>
+              <div className={styles.macroItem}>
+                <span className={styles.macroLabel}>Carbs</span>
+                <span className={styles.macroValue}>{stats.carbs}g</span>
+              </div>
             </div>
           </div>
-          {stats.hasActualMacros && stats.chartData.length > 0 && (
-            <div className={styles.macronutrientChartContainer}>
-              <ResponsiveContainer width="100%" aspect={1.6}>
-                <PieChart>
-                  <Pie
-                    data={stats.chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={70}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {stats.chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value) => `${value}g`}
-                    contentStyle={{ backgroundColor: '#333', borderColor: '#555', borderRadius: '8px', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
-                  />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle"/>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          )}
           {!stats.hasActualMacros && stats.entryCount > 0 && (
             <div className={styles.macroNote}>*Add entries with USDA search or manual macro data for tracking</div>
           )}

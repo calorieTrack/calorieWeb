@@ -97,12 +97,6 @@ function HistoricalTrends({ calorieGoal }) {
             >
               Macros
             </button>
-            <button 
-              className={chartType === 'combined' ? styles.active : ''}
-              onClick={() => setChartType('combined')}
-            >
-              Combined
-            </button>
           </div>
         </div>
 
@@ -154,33 +148,6 @@ function HistoricalTrends({ calorieGoal }) {
                   </div>
                   <div className={styles.chartLabel}>
                     {formatDateLabel(day.date)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {chartType === 'combined' && (
-            <div className={styles.combinedChart}>
-              {summaryData.map((day, index) => (
-                <div key={day.date} className={styles.combinedBarContainer}>
-                  <div className={styles.combinedBar}>
-                    <div 
-                      className={styles.caloriesLine}
-                      style={{
-                        height: `${(day.totalCalories / maxCalories) * 200}px`,
-                        backgroundColor: '#007bff'
-                      }}
-                      title={`${day.totalCalories} calories`}
-                    />
-                  </div>
-                  <div className={styles.macroIndicators}>
-                    <div className={`${styles.macroDot} ${styles.proteinDot}`} title={`P: ${day.totalProtein}g`} />
-                    <div className={`${styles.macroDot} ${styles.fatDot}`} title={`F: ${day.totalFat}g`} />
-                    <div className={`${styles.macroDot} ${styles.carbsDot}`} title={`C: ${day.totalCarbs}g`} />
-                  </div>
-                  <div className={styles.chartLabel}>
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
                   </div>
                 </div>
               ))}

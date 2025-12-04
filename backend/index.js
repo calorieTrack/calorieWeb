@@ -443,7 +443,7 @@ app.put('/api/goal/updatecalories', verifyIdToken, (req, res, next) => {
 });
 
 /**
- * GET /api/ai/aisuggestions
+ * GET /api/ai/aisuggestions?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
  * Get AI nutrition suggestions based on nutrition data, see param handling below.
  */
 app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {

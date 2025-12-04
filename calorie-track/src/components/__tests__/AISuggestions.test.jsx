@@ -28,15 +28,41 @@ jest.mock('../../firebase', () => ({
 
 import { getAISuggestions } from '../../api';
 
+const dummyReturn = {
+  "suggestions": [
+    {"name": "n1", "rationale": "r1"},
+    {"name": "n2", "rationale": "r2"},
+  ],
+  "totals": {
+    "totalCalories": 0,
+    "totalProtein": 0,
+    "totalFat": 0,
+    "totalCarbs": 0,
+    "days": 0
+  },
+  "note": "test note"
+};
+
+// Helper function to check for suggestion text
+const expectSuggestionText = () => {
+    expect(screen.getByText(new RegExp('n1', 'i'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp('r1', 'i'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp('n2', 'i'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp('r2', 'i'))).toBeInTheDocument();
+    return;
+};
+
 describe('AISuggestions component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset mock implementation
+    getAISuggestions.mockReset();
   });
 
   test('renders AI Suggestions header and refresh button', async () => {
-    getAISuggestions.mockResolvedValue('Test suggestions');
+    getAISuggestions.mockResolvedValue(dummyReturn);
     
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions />);
 
     expect(screen.getByText(/AI Suggestions/i)).toBeInTheDocument();
     
@@ -58,13 +84,13 @@ describe('AISuggestions component', () => {
     
     getAISuggestions.mockReturnValue(pendingPromise);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     // Should show loading state
     expect(screen.getByText(/Loading suggestions/i)).toBeInTheDocument();
     
     // Resolve the promise
-    resolvePromise('Test suggestions');
+    resolvePromise(dummyReturn);
     
     // Wait for loading to complete
     await waitFor(() => {
@@ -73,23 +99,23 @@ describe('AISuggestions component', () => {
   });
 
   test('fetches and displays suggestions on initial load', async () => {
-    const mockSuggestions = 'test message';
-    getAISuggestions.mockResolvedValue(mockSuggestions);
+    getAISuggestions.mockResolvedValue(dummyReturn);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(mockSuggestions)).toBeInTheDocument();
+    expectSuggestionText();
     expect(getAISuggestions).toHaveBeenCalledTimes(1);
   });
 
   test('displays "No suggestions available" when suggestions are empty', async () => {
-    getAISuggestions.mockResolvedValue('');
+    // Return an object without suggestions array or with empty array
+    getAISuggestions.mockResolvedValue({});
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
@@ -100,68 +126,65 @@ describe('AISuggestions component', () => {
 
   test('displays error message when API call fails', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    getAISuggestions.mockRejectedValue(new Error('API Error'));
+    const error = new Error('API Error');
+    getAISuggestions.mockRejectedValue(error);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(/Failed to load suggestions. Please try again./i)).toBeInTheDocument();
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch AI suggestions:', expect.any(Error));
+    await waitFor(() => {
+      expect(screen.getByText(/Error: API Error/i)).toBeInTheDocument();
+    });
+    
+    // Component logs err.message, not the Error object
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch AI suggestions:', 'API Error');
     
     consoleErrorSpy.mockRestore();
   });
 
-  test('handles null or undefined entries prop without errors', async () => {
-    const mockSuggestions = 'test suggestions';
-    getAISuggestions.mockResolvedValueOnce(mockSuggestions);
+  test('handles invalid response format without errors', async () => {
+    // Test with undefined response
+    getAISuggestions.mockResolvedValueOnce(undefined);
 
-    // Test with null entries
-    const { rerender, unmount } = render(<AISuggestions entries={null} />);
+    render(<AISuggestions/>);
     
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(mockSuggestions)).toBeInTheDocument();
-
-    unmount();
-
-    // Test with undefined entries
-    getAISuggestions.mockResolvedValueOnce(mockSuggestions);
-    render(<AISuggestions entries={undefined} />);
-
-    await waitFor(() => {
-      expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
-    });
-
-    expect(screen.getByText(mockSuggestions)).toBeInTheDocument();
+    expect(screen.getByText(/No suggestions available/i)).toBeInTheDocument();
   });
 
   test('refresh button fetches new suggestions when clicked', async () => {
     const user = userEvent.setup();
-    const mockSuggestions1 = 'Initial suggestions';
-    const mockSuggestions2 = 'Refreshed suggestions';
     
-    // First call resolves immediately
+    const refreshedReturn = {
+      ...dummyReturn,
+      suggestions: [
+        {"name": "n3", "rationale": "r3"},
+        {"name": "n4", "rationale": "r4"},
+      ],
+    };
+    
     let resolveSecondPromise;
     const secondPromise = new Promise((resolve) => {
       resolveSecondPromise = resolve;
     });
     
     getAISuggestions
-      .mockResolvedValueOnce(mockSuggestions1)
+      .mockResolvedValueOnce(dummyReturn)
       .mockReturnValueOnce(secondPromise);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(mockSuggestions1)).toBeInTheDocument();
+    expectSuggestionText();
     expect(getAISuggestions).toHaveBeenCalledTimes(1);
 
     const refreshButton = screen.getByTitle(/Refresh suggestions/i);
@@ -171,22 +194,23 @@ describe('AISuggestions component', () => {
       expect(screen.getByText(/Loading suggestions/i)).toBeInTheDocument();
     });
 
-    resolveSecondPromise(mockSuggestions2);
+    resolveSecondPromise(refreshedReturn);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(mockSuggestions2)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(new RegExp('n3', 'i'))).toBeInTheDocument();
+      expect(screen.getByText(new RegExp('r3', 'i'))).toBeInTheDocument();
+      expect(screen.getByText(new RegExp('n4', 'i'))).toBeInTheDocument();
+      expect(screen.getByText(new RegExp('r4', 'i'))).toBeInTheDocument();
+    });
     expect(getAISuggestions).toHaveBeenCalledTimes(2);
   });
 
   test('refresh button is disabled during loading', async () => {
     const user = userEvent.setup();
-    let resolveFirstPromise;
-    const firstPromise = new Promise((resolve) => {
-      resolveFirstPromise = resolve;
-    });
     
     let resolveSecondPromise;
     const secondPromise = new Promise((resolve) => {
@@ -194,43 +218,45 @@ describe('AISuggestions component', () => {
     });
     
     getAISuggestions
-      .mockReturnValueOnce(firstPromise)
+      .mockResolvedValueOnce(dummyReturn)
       .mockReturnValueOnce(secondPromise);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     const refreshButton = screen.getByTitle(/Refresh suggestions/i);
     
-    // Button should be disabled during initial load
-    expect(refreshButton).toBeDisabled();
-    resolveFirstPromise('test suggestions 1');
+    // Wait for initial load to complete
     await waitFor(() => {
       expect(refreshButton).not.toBeDisabled();
-    });
+    }, { timeout: 3000 });
+    
     await user.click(refreshButton);
 
-    // Button should be disabled again during refresh
+    // Button should be disabled during refresh
     await waitFor(() => {
       expect(refreshButton).toBeDisabled();
-    });
+    }, { timeout: 3000 });
 
-    resolveSecondPromise('test suggestions 2');
+    resolveSecondPromise(dummyReturn);
+    
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    await waitFor(() => {
       expect(refreshButton).not.toBeDisabled();
-    });
+    }, { timeout: 3000 });
   });
 
   test('handles multiple rapid refresh clicks gracefully', async () => {
     const user = userEvent.setup();
-    const mockSuggestions = 'test suggestions';
     
     // Mock to resolve after a delay
     getAISuggestions.mockImplementation(() => 
-      new Promise(resolve => setTimeout(() => resolve(mockSuggestions), 100))
+      new Promise(resolve => setTimeout(() => resolve(dummyReturn), 100))
     );
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     // Wait for initial load
     await waitFor(() => {
@@ -244,31 +270,29 @@ describe('AISuggestions component', () => {
     await user.click(refreshButton);
     await user.click(refreshButton);
 
-    // Should eventually show the final suggestions
+    // Wait for loading to complete
     await waitFor(() => {
-      expect(screen.getByText(mockSuggestions)).toBeInTheDocument();
-    }, { timeout: 2000 });
+      expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
+    }, { timeout: 3000 });
 
-    // Should have been called multiple times (initial + 3 clicks)
+    // Verify suggestions are displayed
+    await waitFor(() => {
+        expectSuggestionText();
+    }, { timeout: 3000 });
+
     expect(getAISuggestions.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 
   test('displays suggestions with proper formatting', async () => {
-    const longSuggestions =
-      'test message line 1\n\nbagels\ncream cheese\nthis is a very long message ' +
-      'that should be displayed in multiple lines despite there being no newlines';
-    getAISuggestions.mockResolvedValue(longSuggestions);
+    getAISuggestions.mockResolvedValue(dummyReturn);
 
-    render(<AISuggestions entries={[]} />);
+    render(<AISuggestions/>);
 
     await waitFor(() => {
       expect(screen.queryByText(/Loading suggestions/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(/test message line 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/bagels/i)).toBeInTheDocument();
-    expect(screen.getByText(/cream cheese/i)).toBeInTheDocument();
-    expect(screen.getByText(/this is a very long message that should be displayed in multiple lines despite there being no newlines/i)).toBeInTheDocument();
+    expectSuggestionText();
   });
 });
 

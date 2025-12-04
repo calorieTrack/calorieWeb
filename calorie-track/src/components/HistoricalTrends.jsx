@@ -205,7 +205,10 @@ function HistoricalTrends({ calorieGoal }) {
   return (
     <div className={styles.historicalTrends}>
       <div className={styles.trendsHeader}>
-        <h2>📊 Historical Trends</h2>
+        <h2>
+          <span className="material-symbols-outlined" aria-hidden>bar_chart</span>
+          Historical Trends
+        </h2>
         <div className={styles.dateRangeSelector}>
           <label htmlFor="dateRange">Time Period:</label>
           <select 

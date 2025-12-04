@@ -223,7 +223,7 @@ function App() {
                 <EntryForm onAdd={handleSaveEntry} />
               </div>
               <div className="ai-suggestions-wrapper">
-                <AISuggestions entries={entries} />
+                <AISuggestions />
               </div>
             </div>
           )}

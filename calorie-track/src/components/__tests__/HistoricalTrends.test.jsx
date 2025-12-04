@@ -90,7 +90,7 @@ describe('HistoricalTrends component', () => {
 
     render(<HistoricalTrends calorieGoal={mockCalorieGoal} />);
 
-    expect(screen.getByText('📊 Historical Trends')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /historical trends/i })).toBeInTheDocument();
     expect(screen.getByLabelText('Time Period:')).toBeInTheDocument();
     const select = await screen.findByLabelText('Time Period:');
     expect(select).toHaveValue('7');  
@@ -117,7 +117,7 @@ describe('HistoricalTrends component', () => {
     render(<HistoricalTrends calorieGoal={mockCalorieGoal} />);
     
     await waitFor(() => {
-      expect(screen.getByText('📊 Historical Trends')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /historical trends/i })).toBeInTheDocument();
       expect(screen.getByLabelText('Time Period:')).toBeInTheDocument();
     });
   });

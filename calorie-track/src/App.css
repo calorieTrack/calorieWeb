@@ -5,7 +5,7 @@
   display: flex;
   gap: 1.5rem;
   margin: 1.5rem 0;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .entry-form-wrapper {
@@ -200,3 +200,48 @@ button:disabled:hover {
     font-size: 1.5em;
   }
 }
+
+/* Material Symbols sizing helpers */
+.material-symbols-outlined {
+  /* Match surrounding text size by default */
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle; /* baseline flow fallback */
+  display: inline-block;
+  /* sensible defaults for variation axes */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Utility modifiers */
+.material-symbols-outlined.xs { font-size: 0.8em; }
+.material-symbols-outlined.sm { font-size: 0.9em; }
+.material-symbols-outlined.lg { font-size: 1.2em; }
+.material-symbols-outlined.xl { font-size: 1.3em; }
+
+/* Inline icon helper — centers icon vertically with text */
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle; /* fallback for baseline flow */
+  line-height: 1;
+  font-size: 1em; /* inherit surrounding text size */
+}
+
+/* Use on the symbol itself or on a wrapper */
+.icon-inline .material-symbols-outlined,
+.material-symbols-outlined.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* margin helpers */
+.icon-mr { margin-right: .35em; }
+.icon-ml { margin-left: .35em; }
+
+/* small/large variations */
+.icon-inline.sm { font-size: 0.9em; }
+.icon-inline.lg { font-size: 1.25em; }

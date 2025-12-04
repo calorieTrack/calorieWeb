@@ -50,7 +50,7 @@
   cursor: not-allowed;
 }
 
-.ai-suggestions-text {
+.ai-suggestions-textbox {
   padding: 1rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -61,6 +61,38 @@
   min-height: 100px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  text-align: left;
+}
+
+
+.ai-suggestions-text .ai-suggestions-list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-position: outside;
+  list-style-type: disc;
+}
+
+.ai-suggestions-text .ai-suggestions-list .ai-suggestion-item {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+  display: list-item;
+}
+
+.ai-suggestions-text .ai-suggestions-list .ai-suggestion-name {
+  font-weight: 600;
+  margin-right: 0.35rem; /* small spacing after item name */
+}
+
+.ai-suggestions-text .ai-suggestions-list .ai-suggestion-rationale {
+  color: inherit;
+}
+
+.ai-suggestion-note {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  /* align the note with the list text (not with the bullet) */
+  padding-left: 1.5rem;
 }
 
 .ai-suggestions-text p {
@@ -83,7 +115,6 @@
 
 .ai-error {
   color: #fca5a5;
-  text-align: center;
 }
 
 .ai-error p {

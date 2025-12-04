@@ -49,8 +49,14 @@ function UserHeader({ user, onSignOut, onSettings, onTrends }) {
         <p>Welcome, {displayName}</p>
       </div>
       <div className="user-actions">
-        <button onClick={onTrends} className="trends-btn">📊 Trends</button>
-        <button onClick={onSettings} className="settings-btn">⚙️ Settings</button>
+        <button onClick={onTrends} className="trends-btn">
+          <span className="material-symbols-outlined lg icon-inline icon-mr" aria-hidden>bar_chart</span>
+          Trends
+        </button>
+        <button onClick={onSettings} className="settings-btn">
+          <span className="material-symbols-outlined lg icon-inline icon-mr" aria-hidden>settings</span>
+          Settings
+        </button>
         <button onClick={onSignOut}>Sign Out</button>
       </div>
     </div>

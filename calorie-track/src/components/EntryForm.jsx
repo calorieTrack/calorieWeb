@@ -373,12 +373,15 @@ function EntryForm({ onAdd }) {
             {/* Manual entry option */}
             <div className="suggestion-section">
               <div
-                className="suggestion-item manual-suggestion"
-                onClick={handleManualEntry}
-              >
-                <div className="food-name">📝 Enter nutrition data manually</div>
-                <div className="food-meta">For custom foods or if not found above</div>
-              </div>
+                  className="suggestion-item manual-suggestion"
+                  onClick={handleManualEntry}
+                >
+                  <div className="food-name">
+                    <span className="material-symbols-outlined" aria-hidden>edit_note</span>
+                    Enter nutrition data manually
+                  </div>
+                  <div className="food-meta">For custom foods or if not found above</div>
+                </div>
             </div>
           </div>
         )}
@@ -439,7 +442,12 @@ function EntryForm({ onAdd }) {
                   </>
                 )}
                 {selectedFood.type === 'local' && '💾 Saved Data'}
-                {selectedFood.type === 'manual' && '✏️ Manual Entry'}
+                {selectedFood.type === 'manual' && (
+                  <>
+                    <span className="material-symbols-outlined" aria-hidden>edit</span>
+                    Manual Entry
+                  </>
+                )}
               </span>
             )}
           </div>

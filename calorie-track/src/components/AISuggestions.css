@@ -50,11 +50,7 @@
   cursor: not-allowed;
 }
 
-<<<<<<< HEAD
-.ai-suggestions-text {
-=======
 .ai-suggestions-textbox {
->>>>>>> origin/main
   padding: 1rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -65,8 +61,6 @@
   min-height: 100px;
   white-space: pre-wrap;
   word-wrap: break-word;
-<<<<<<< HEAD
-=======
   text-align: left;
 }
 
@@ -99,7 +93,6 @@
   color: rgba(255, 255, 255, 0.7);
   /* align the note with the list text (not with the bullet) */
   padding-left: 1.5rem;
->>>>>>> origin/main
 }
 
 .ai-suggestions-text p {
@@ -122,10 +115,6 @@
 
 .ai-error {
   color: #fca5a5;
-<<<<<<< HEAD
-  text-align: center;
-=======
->>>>>>> origin/main
 }
 
 .ai-error p {

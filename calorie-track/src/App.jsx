@@ -223,11 +223,7 @@ function App() {
                 <EntryForm onAdd={handleSaveEntry} />
               </div>
               <div className="ai-suggestions-wrapper">
-<<<<<<< HEAD
-                <AISuggestions entries={entries} />
-=======
                 <AISuggestions />
->>>>>>> origin/main
               </div>
             </div>
           )}

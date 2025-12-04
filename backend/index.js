@@ -443,15 +443,6 @@ app.put('/api/goal/updatecalories', verifyIdToken, (req, res, next) => {
 });
 
 /**
-<<<<<<< HEAD
- * GET /api/ai/aisuggestions
- * Get AI nutrition suggestions based on user's last 7 days of nutrition data
- */
-app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
-  try {
-    const endDate = new Date().toISOString().slice(0, 10);
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-=======
  * GET /api/ai/aisuggestions?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
  * Get AI nutrition suggestions based on nutrition data, see param handling below.
  */
@@ -492,7 +483,6 @@ app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
       startDate = endDate;
       endDate = tmp;
     }
->>>>>>> origin/main
     const nutritionSummary = db.prepare(`
       SELECT date, 
              SUM(calories) as totalCalories, 
@@ -523,24 +513,16 @@ app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
     });
     totals.days = nutritionSummary.length;
     totals.calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid).calorieGoal || 2000;
-<<<<<<< HEAD
-=======
     // Include the requested date range and today's date so the AI can reference them
     totals.startDate = startDate;
     totals.endDate = endDate;
     totals.today = today;
->>>>>>> origin/main
     const suggestions = await pollSuggestions(totals);
     console.log('Returning suggestions:', suggestions);
     res.json(suggestions);
   } catch (error) {
-<<<<<<< HEAD
-    console.error('AI suggestions error:', error);
-    res.status(500).json({ error: 'Failed to generate AI suggestions', message: error.message });
-=======
     console.error('AI suggestions error:', error.message);
     res.status(500).json({ error: error.message });
->>>>>>> origin/main
   }
 });
 

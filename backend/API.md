@@ -556,13 +556,9 @@ GET /api/foods/search/usda?q=chicken&dataTypes=Foundation,Branded,Survey%20(FNDD
 ### Get AI Nutrition Suggestions
 
 #### `GET /api/ai/aisuggestions`
-<<<<<<< HEAD
-Get personalized nutrition recommendations based on the user's nutrition data from the past 7 days. Uses Google Gemini AI to analyze daily averages and provide food suggestions.
-=======
 > Optional: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`
 
 Get personalized nutrition recommendations based on the user's nutrition data from `StartDate` to `EndDate`. Default to `Today` if unspecified. Uses Gemini API to analyze daily averages and provide food suggestions.
->>>>>>> origin/main
 
 **Headers:**
 ```
@@ -577,20 +573,12 @@ Authorization: Bearer <firebase_id_token>
 **Note:** 
 - Analyzes nutrition data from the past 7 days
 - Returns personalized food recommendations based on average daily intake
-<<<<<<< HEAD
-- Recommendations are generated using Google Gemini AI
-=======
 - Recommendations are generated using Gemini API
->>>>>>> origin/main
 
 **Status Codes:**
 - `200` - Suggestions generated successfully
 - `401` - Unauthorized
-<<<<<<< HEAD
-- `500` - AI API error or server error (check GEMINI_API_KEY configuration)
-=======
 - `500` - AI API error (check GEMINI_API_KEY configuration) or illgal output (non-JSON)
->>>>>>> origin/main
 
 ---
 

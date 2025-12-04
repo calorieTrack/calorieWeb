@@ -1,0 +1,395 @@
+/* Analysis Component Styles (CSS Module) */
+.container {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container h2 {
+  color: inherit;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.statCard {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calorieCard {
+  grid-column: span 1;
+}
+
+.macroCard {
+  grid-column: span 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.statHeader {
+  font-weight: 600;
+  color: inherit;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: inherit;
+  margin-bottom: 0.5rem;
+}
+
+.statSubtext {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.statFooter {
+  font-size: 0.9rem;
+}
+
+.remainingPositive {
+  color: #22c55e;
+}
+
+.remainingNegative {
+  color: #ef4444;
+}
+
+.macroContent {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  flex: 1; /* fill remaining space in macro card */
+}
+
+.macroContent:not(:has(.macronutrientChartContainer)) {
+  justify-content: center;
+}
+
+.macroContent:not(:has(.macronutrientChartContainer)) .macroItemsWrapper {
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.macroItemsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+
+  justify-content: space-between;
+}
+
+.macroContent:not(:has(.macronutrientChartContainer)) .macroItem {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.macroContent:has(.macronutrientChartContainer) .macroItemsWrapper {
+  height: 200px;
+}
+
+.macroItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 50px;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.macroItem:nth-child(1) {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.macroItem:nth-child(2) {
+  background: rgba(255, 217, 61, 0.2);
+  border-color: rgba(255, 217, 61, 0.3);
+}
+
+.macroItem:nth-child(3) {
+  background: rgba(107, 207, 127, 0.2);
+  border-color: rgba(107, 207, 127, 0.3);
+}
+
+/* Highlight state when corresponding chart slice is hovered */
+.highlight {
+  transform: translateX(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  border-color: rgba(255,255,255,0.18);
+}
+
+/* Show emoji inline before the value so emoji and value are horizontal */
+.macroValue {
+  display: block; /* place value on its own line under the label */
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: inherit;
+  margin-top: 0.15rem; /* small gap under the label */
+  align-self: flex-start; /* align left within the macroItem */
+}
+
+/* spacing for the decorative emoji placed before the value */
+.macroValue::before {
+  display: inline-block;
+  margin-right: 0.4rem;
+}
+
+.macroItem:nth-child(1) .macroValue::before { content: "🥩"; font-size: 1rem; }
+.macroItem:nth-child(2) .macroValue::before { content: "🧈"; font-size: 1rem; }
+.macroItem:nth-child(3) .macroValue::before { content: "🌾"; font-size: 1rem; }
+
+.macroLabel {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.1rem;
+  font-weight: 500;
+}
+
+.macroContent:has(.macronutrientChartContainer) .macroValue {
+  align-self: flex-end;
+}
+
+.macroValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: inherit;
+  align-self: center;
+}
+
+.macroItem:nth-child(1) .macroLabel,
+.macroItem:nth-child(1) .macroValue {
+  color: #ff6b6b;
+}
+
+.macroItem:nth-child(2) .macroLabel,
+.macroItem:nth-child(2) .macroValue {
+  color: #ffd93d;
+}
+
+.macroItem:nth-child(3) .macroLabel,
+.macroItem:nth-child(3) .macroValue {
+  color: #6bcf7f;
+}
+
+.macronutrientChartContainer {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.macroNote {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/* Quick Stats */
+.quickStats {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.quickStatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quickStatRow:last-child {
+  border-bottom: none;
+}
+
+.statValueSmall {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: inherit;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.under {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.onTrack {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid #22c55e;
+}
+
+.over {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.emptyMessage {
+  color: inherit;
+}
+
+@media (prefers-color-scheme: light) {
+  .container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+  }
+
+  .statCard {
+    background: #f8fafc;
+  }
+
+  .statSubtext {
+    color: #6b7280;
+  }
+
+  .progressBar {
+    background: #f3f4f6;
+  }
+
+  .macroItem:nth-child(1) {
+    background: #fee2e2;
+    border-color: #fecaca;
+  }
+
+  .macroItem:nth-child(1) .macroLabel,
+  .macroItem:nth-child(1) .macroValue {
+    color: #dc2626;
+  }
+
+  .macroItem:nth-child(2) {
+    background: #fef3c7;
+    border-color: #fde68a;
+  }
+
+  .macroItem:nth-child(2) .macroLabel,
+  .macroItem:nth-child(2) .macroValue {
+    color: #d97706;
+  }
+
+  .macroItem:nth-child(3) {
+    background: #dcfce7;
+    border-color: #bbf7d0;
+  }
+
+  .macroItem:nth-child(3) .macroLabel,
+  .macroItem:nth-child(3) .macroValue {
+    color: #16a34a;
+  }
+
+  .macroLabel {
+    color: #6b7280;
+  }
+
+  .quickStats {
+    background: #f1f5f9 !important;
+  }
+
+  .quickStatRow {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .macroContent {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Layout three macro items in a horizontal row on small screens */
+  .macroItemsWrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .macroItem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: calc((100% - 2 * 0.75rem) / 3);
+    width: auto;
+    padding: 0.35rem 0.5rem;
+    height: fit-content;
+  }
+
+  .macroValue {
+    align-self: flex-end !important;
+  }
+  /* Remove the fixed height used for side-by-side layout so the stacked
+     (column) layout on small screens doesn't leave empty space below
+     the three items when a chart is present. */
+  .macroContent:has(.macronutrientChartContainer) .macroItemsWrapper {
+    height: auto;
+  }
+  .macronutrientChartContainer {
+    max-width: 220px;
+    margin: 1rem auto 0;
+  }
+}

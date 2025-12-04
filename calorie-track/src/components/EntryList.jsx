@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './EntryList.css';
 
 function EntryList({ entries, onEdit, onDelete }) {
+  const totalCalories = entries.reduce((sum, entry) => sum + (entry.calories || 0), 0);
+
   return (
     <div className="entries">
       <h2>Today's Entries</h2>
@@ -38,7 +41,7 @@ function EntryList({ entries, onEdit, onDelete }) {
         </ul>
       )}
       <div className="total">
-        Total: {entries.reduce((sum, e) => sum + e.calories, 0)} calories
+        <span>Total: {totalCalories} calories</span>
       </div>
     </div>
   );

@@ -223,10 +223,6 @@ function UserSettings({ user, onClose, calorieGoal = 2000, onUpdateCalorieGoal }
               </button>
           </div>
         </form>
-
-        <button className="settings-close-btn" onClick={onClose}>
-          Close Settings
-        </button>
       </div>
     </div>
   );

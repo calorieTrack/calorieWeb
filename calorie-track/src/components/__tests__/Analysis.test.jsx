@@ -6,35 +6,35 @@ import Analysis from '../Analysis';
 describe('Analysis component', () => {
   test('calculates total, remaining and shows Under Goal status', () => {
     const entries = [{ calories: 1500 }];
-    const { container } = render(<Analysis entries={entries} />);
+    const { getByTestId } = render(<Analysis entries={entries} />);
 
     expect(screen.getByText('Total Calories')).toBeInTheDocument();
     expect(screen.getByText('1500')).toBeInTheDocument();
 
     expect(screen.getByText('500 cal remaining')).toBeInTheDocument();
 
-    const progressFill = container.querySelector('.progress-fill');
+    const progressFill = getByTestId('progress-fill');
     expect(progressFill).toBeTruthy();
     expect(progressFill.style.width).toBe('75%');
 
     const status = screen.getByText(/Under Goal/i);
     expect(status).toBeInTheDocument();
-    expect(status).toHaveClass('under');
+    expect(screen.getByTestId('status-badge').textContent).toMatch(/Under Goal/i);
   });
 
   test('caps progress at 100% and shows Over Goal status when above goal', () => {
     const entries = [{ calories: 2500 }];
-    const { container } = render(<Analysis entries={entries} />);
+    const { getByTestId } = render(<Analysis entries={entries} />);
 
     expect(screen.getByText('2500')).toBeInTheDocument();
     expect(screen.getByText('500 cal over')).toBeInTheDocument();
 
-    const progressFill = container.querySelector('.progress-fill');
+    const progressFill = getByTestId('progress-fill');
     expect(progressFill.style.width).toBe('100%');
 
     const status = screen.getByText(/Over Goal/i);
     expect(status).toBeInTheDocument();
-    expect(status).toHaveClass('over');
+    expect(screen.getByTestId('status-badge').textContent).toMatch(/Over Goal/i);
   });
 
   test('shows On Track status at 80% boundary (green) and correct percentage', () => {
@@ -46,7 +46,6 @@ describe('Analysis component', () => {
 
     const status = screen.getByText(/On Track/i);
     expect(status).toBeInTheDocument();
-    expect(status).toHaveClass('on-track');
   });
 
   test('sums macros correctly, rounds to one decimal, and shows macro note when macros present', () => {
@@ -73,12 +72,12 @@ describe('Analysis component', () => {
   });
 
   test('shows empty message and zero stats when no entries', () => {
-    const { container } = render(<Analysis entries={[]} />);
+    const { getByTestId } = render(<Analysis entries={[]} />);
 
     expect(screen.getByText('Daily Analysis')).toBeInTheDocument();
     expect(screen.getByText('No entries for this day. Add your first entry to see analysis!')).toBeInTheDocument();
 
-    const entryCount = container.querySelector('.stat-value-small');
+    const entryCount = getByTestId('quick-entry-count');
     expect(entryCount).toBeTruthy();
     expect(entryCount.textContent).toBe('0');
   });
@@ -127,17 +126,17 @@ describe('Analysis component', () => {
   });
 
   test('applies correct color codes to progress bar based on status', () => {
-    const { rerender, container } = render(<Analysis entries={[{ calories: 1000 }]} />);
+    const { rerender, getByTestId } = render(<Analysis entries={[{ calories: 1000 }]} />);
     
-    let progressFill = container.querySelector('.progress-fill');
+    let progressFill = getByTestId('progress-fill');
     expect(progressFill).toHaveStyle({ backgroundColor: '#ffc107' });
 
     rerender(<Analysis entries={[{ calories: 2000 }]} />);
-    progressFill = container.querySelector('.progress-fill');
+    progressFill = getByTestId('progress-fill');
     expect(progressFill).toHaveStyle({ backgroundColor: '#28a745' });
 
     rerender(<Analysis entries={[{ calories: 2500 }]} />);
-    progressFill = container.querySelector('.progress-fill');
+    progressFill = getByTestId('progress-fill');
     expect(progressFill).toHaveStyle({ backgroundColor: '#dc3545' });
   });
 });

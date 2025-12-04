@@ -444,12 +444,45 @@ app.put('/api/goal/updatecalories', verifyIdToken, (req, res, next) => {
 
 /**
  * GET /api/ai/aisuggestions
- * Get AI nutrition suggestions based on user's last 7 days of nutrition data
+ * Get AI nutrition suggestions based on nutrition data, see param handling below.
  */
 app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
   try {
-    const endDate = new Date().toISOString().slice(0, 10);
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    // Route supports optional query params: ?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+    // Behavior:
+    // - If neither param is provided, both default to today's date.
+    // - If only one is provided, the other defaults to the same date (treat as a single-day request).
+    // - If startDate > endDate, we swap them so SQL BETWEEN works correctly.
+    // We validate both dates strictly (YYYY-MM-DD) and ensure they represent real dates.
+    const { startDate: qsStart, endDate: qsEnd } = req.query || {};
+    const today = new Date().toISOString().slice(0, 10);
+    let startDate = qsStart || qsEnd || today;
+    let endDate = qsEnd || qsStart || today;
+
+    // YYYY-MM-DD check and real-date verification
+    const isValidISODate = (s) => {
+      if (!s || typeof s !== 'string') return false;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+      // Ensure it parses to a valid date and round-trips to the same YYYY-MM-DD
+      const parsed = new Date(s);
+      if (Number.isNaN(parsed.getTime())) return false;
+      return parsed.toISOString().slice(0, 10) === s;
+    };
+
+    // Validate provided query params (if present)
+    if (qsStart && !isValidISODate(qsStart)) {
+      return res.status(400).json({ error: 'Invalid startDate format. Use YYYY-MM-DD' });
+    }
+    if (qsEnd && !isValidISODate(qsEnd)) {
+      return res.status(400).json({ error: 'Invalid endDate format. Use YYYY-MM-DD' });
+    }
+
+    // Ensure startDate <= endDate, otherwise swap
+    if (startDate > endDate) {
+      const tmp = startDate;
+      startDate = endDate;
+      endDate = tmp;
+    }
     const nutritionSummary = db.prepare(`
       SELECT date, 
              SUM(calories) as totalCalories, 
@@ -480,12 +513,16 @@ app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
     });
     totals.days = nutritionSummary.length;
     totals.calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid).calorieGoal || 2000;
+    // Include the requested date range and today's date so the AI can reference them
+    totals.startDate = startDate;
+    totals.endDate = endDate;
+    totals.today = today;
     const suggestions = await pollSuggestions(totals);
     console.log('Returning suggestions:', suggestions);
     res.json(suggestions);
   } catch (error) {
-    console.error('AI suggestions error:', error);
-    res.status(500).json({ error: 'Failed to generate AI suggestions', message: error.message });
+    console.error('AI suggestions error:', error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 

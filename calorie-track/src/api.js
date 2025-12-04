@@ -126,18 +126,11 @@ export const searchUSDAFoods = (query, limit = 10, dataTypes = null) => {
 };
 
 /**
- * Get AI nutrition suggestions based on user's last 7 days of nutrition data
- * Returns: { suggestions: string, nutritionSummary: {...} }
- */
-export const getAISuggestions = () =>
-  apiFetch('/api/ai/aisuggestions');
-
-/**
  * Get the current user's daily calorie goal.
  * Returns: { calorieGoal: number }
  */
 export const getCalorieGoal = () =>
-  apiFetch('/api/me/calories');
+  apiFetch('/api/goal/calories');
 
 /**
  * Update the current user's daily calorie goal.
@@ -145,7 +138,14 @@ export const getCalorieGoal = () =>
  * Returns: { calorieGoal: number }
  */
 export const updateCalorieGoal = (calorieGoal) =>
-  apiFetch('/api/me/updatecalories', {
+  apiFetch('/api/goal/updatecalories', {
     method: 'PUT',
     body: JSON.stringify({ newCalorieGoal: calorieGoal }),
   });
+
+/**
+ * Get AI nutrition suggestions based on user's last 7 days of nutrition data
+ * Returns: { suggestions: string, nutritionSummary: {...} }
+ */
+export const getAISuggestions = () =>
+  apiFetch('/api/ai/aisuggestions');

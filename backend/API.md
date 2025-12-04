@@ -28,6 +28,7 @@ Check if the server is running and configured properly.
   "environment": "development",
   "hasUSDAKey": true,
   "hasFirebaseKey": true,
+  "hasGeminiKey": true,
   "port": 4000
 }
 ```
@@ -350,6 +351,67 @@ Content-Type: application/json
 
 ---
 
+### Get Calorie Goal
+
+#### `GET /api/goal/calories`
+Get the current authenticated user's calorie goal.
+
+**Headers:**
+```
+Authorization: Bearer <firebase_id_token>
+```
+
+**Response:**
+```json
+{
+  "calorieGoal": 2000
+}
+```
+
+**Note:** Defaults to 2000 calories if not set.
+
+**Status Codes:**
+- `200` - Success
+- `401` - Unauthorized
+
+---
+
+### Update Calorie Goal
+
+#### `PUT /api/goal/updatecalories`
+Update the current authenticated user's calorie goal.
+
+**Headers:**
+```
+Authorization: Bearer <firebase_id_token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "newCalorieGoal": 2200
+}
+```
+
+**Required Fields:**
+- `newCalorieGoal` (number): New daily calorie goal (must be a positive number)
+
+**Response:**
+```json
+{
+  "calorieGoal": 2200
+}
+```
+
+**Status Codes:**
+- `200` - Calorie goal updated successfully
+- `400` - Missing calorieGoal or invalid value (must be positive number)
+- `401` - Unauthorized
+- `500` - Server error
+
+---
+
 ## Food Database Endpoints
 
 ### Autocomplete Food Names
@@ -489,6 +551,35 @@ GET /api/foods/search/usda?q=chicken&dataTypes=Foundation,Branded,Survey%20(FNDD
 
 ---
 
+## AI Endpoints
+
+### Get AI Nutrition Suggestions
+
+#### `GET /api/ai/aisuggestions`
+Get personalized nutrition recommendations based on the user's nutrition data from the past 7 days. Uses Google Gemini AI to analyze daily averages and provide food suggestions.
+
+**Headers:**
+```
+Authorization: Bearer <firebase_id_token>
+```
+
+**Response:**
+```
+"Based on your average daily nutrition over the past week, here are some personalized recommendations: [AI-generated suggestions]"
+```
+
+**Note:** 
+- Analyzes nutrition data from the past 7 days
+- Returns personalized food recommendations based on average daily intake
+- Recommendations are generated using Google Gemini AI
+
+**Status Codes:**
+- `200` - Suggestions generated successfully
+- `401` - Unauthorized
+- `500` - AI API error or server error (check GEMINI_API_KEY configuration)
+
+---
+
 ## Error Responses
 
 All endpoints may return error responses in this format:
@@ -520,6 +611,13 @@ Common error status codes:
 - Get free API key from [USDA FoodData Central](https://fdc.nal.usda.gov/api-key-signup.html)
 - All USDA nutrition values are per 100g
 - Frontend should adjust values based on user's quantity input
+
+### Gemini Integration
+- Requires GEMINI_API_KEY in environment variables
+- Get free API key from [Google AI Studio](https://makersuite.google.com/app/apikey) or [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+- Used for generating personalized nutrition suggestions based on user's weekly nutrition data
+- Uses the `gemini-2.5-flash-lite` model
+- Add to your `.env` file: `GEMINI_API_KEY=your_api_key_here`
 
 ### Date Format
 - All dates use ISO 8601 format: `YYYY-MM-DD`

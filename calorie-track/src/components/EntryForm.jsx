@@ -19,7 +19,7 @@ function EntryForm({ onAdd }) {
 
   // Calculate adjusted nutrition values based on quantity (only for weight units)
   const getAdjustedNutrition = (baseNutrition, inputQuantity) => {
-    if (!selectedFood || selectedFood.type !== 'usda') {
+        if (!selectedFood || selectedFood.type !== 'usda') {
       return baseNutrition;
     }
     
@@ -241,13 +241,14 @@ function EntryForm({ onAdd }) {
         {/* Food Suggestions */}
         {showSuggestions && name.trim().length > 0 && (
           <div className="food-suggestions-dropdown">
-            {/* Debug info */}
+            {/* Debug info 
             {process.env.NODE_ENV === 'development' && (
               <div style={{fontSize: '12px', color: '#888', padding: '4px', background: '#f0f0f0'}}>
                 Debug: Local: {suggestions.length}, USDA: {usdaSuggestions.length}, Show: {showSuggestions.toString()}
               </div>
             )}
-            
+            */}
+
             {/* Local suggestions first */}
             {suggestions.length > 0 && (
               <div className="suggestion-section">
@@ -405,7 +406,7 @@ function EntryForm({ onAdd }) {
               }
             }
           }}
-          placeholder={selectedFood?.type === 'usda' ? "Enter weight (e.g., 150g, 0.5kg, 200mg)" : "1 serving, 100g, 1 cup..."}
+          placeholder={"Enter weight (e.g., 150g, 0.5kg, 200mg)"}
         />
       </div>
 

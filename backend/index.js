@@ -5,6 +5,7 @@ import db from './db.js';
 import { auth } from './firebase.js';
 import { verifyIdToken, errorHandler } from './middleware.js';
 import { searchUSDAFoods, adjustNutrients } from './usda.js';
+import { pollSuggestions } from './ai.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -24,6 +25,7 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development',
     hasUSDAKey: !!process.env.USDA_API_KEY,
     hasFirebaseKey: !!process.env.FIREBASE_PRIVATE_KEY,
+    hasGeminiKey: !!process.env.GEMINI_API_KEY,
     port: process.env.PORT || 4000
   });
 });
@@ -397,6 +399,93 @@ app.get('/api/foods/search/usda', verifyIdToken, async (req, res) => {
   } catch (error) {
     console.error('USDA search error:', error);
     res.status(500).json({ error: 'Failed to search USDA database' });
+  }
+});
+
+/**
+ * GET /api/goal/calories
+ * Get current user's calorie goal
+ */
+app.get('/api/goal/calories', verifyIdToken, (req, res) => {
+  const calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid);
+  res.json(calorieGoal || 1500);
+});
+
+/**
+ * PUT /api/goal/updatecalories
+ * Update current user's calorie goal
+ * Body: { calorieGoal: number }
+ */
+app.put('/api/goal/updatecalories', verifyIdToken, (req, res, next) => {
+  try {
+    const { newCalorieGoal } = req.body;
+    
+    if (newCalorieGoal === undefined || newCalorieGoal === null) {
+      return res.status(400).json({ error: 'calorieGoal is required' });
+    }
+    
+    const goalNumber = Number(newCalorieGoal);
+    if (isNaN(goalNumber) || goalNumber < 0) {
+      return res.status(400).json({ error: 'calorieGoal must be a positive number' });
+    }
+
+    const now = new Date().toISOString();
+    db.prepare(`
+      UPDATE users SET calorieGoal = ?, updatedAt = ? WHERE id = ?
+    `).run(goalNumber, now, req.user.uid);
+
+    // Return updated calorie goal
+    const updated = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid);
+    res.json(updated || { calorieGoal: goalNumber });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/ai/aisuggestions
+ * Get AI nutrition suggestions based on user's last 7 days of nutrition data
+ */
+app.get('/api/ai/aisuggestions', verifyIdToken, async (req, res) => {
+  try {
+    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const nutritionSummary = db.prepare(`
+      SELECT date, 
+             SUM(calories) as totalCalories, 
+             SUM(protein) as totalProtein,
+             SUM(fat) as totalFat,
+             SUM(carbs) as totalCarbs,
+             COUNT(*) as entryCount
+      FROM entries
+      WHERE userId = ? AND date BETWEEN ? AND ?
+      GROUP BY date
+      ORDER BY date DESC
+    `).all(req.user.uid, startDate, endDate);
+
+    const totals = nutritionSummary.reduce((acc, day) => {
+      return {
+        totalCalories: acc.totalCalories + (day.totalCalories || 0),
+        totalProtein: acc.totalProtein + (day.totalProtein || 0),
+        totalFat: acc.totalFat + (day.totalFat || 0),
+        totalCarbs: acc.totalCarbs + (day.totalCarbs || 0),
+        totalEntries: acc.totalEntries + (day.entryCount || 0)
+      };
+    }, {
+      totalCalories: 0,
+      totalProtein: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalEntries: 0
+    });
+    totals.days = nutritionSummary.length;
+    totals.calorieGoal = db.prepare('SELECT calorieGoal FROM users WHERE id = ?').get(req.user.uid).calorieGoal || 2000;
+    const suggestions = await pollSuggestions(totals);
+    console.log('Returning suggestions:', suggestions);
+    res.json(suggestions);
+  } catch (error) {
+    console.error('AI suggestions error:', error);
+    res.status(500).json({ error: 'Failed to generate AI suggestions', message: error.message });
   }
 });
 

@@ -2,13 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import styles from './Analysis.module.css';
 
-function Analysis({ entries }) {
-  const CALORIE_GOAL = 2000; // Default daily goal
-  
+
+function Analysis({ entries, calorieGoal = 2000 }) {
   const stats = useMemo(() => {
     const total = entries.reduce((sum, entry) => sum + entry.calories, 0);
-    const remaining = CALORIE_GOAL - total;
-    const percentage = Math.round((total / CALORIE_GOAL) * 100);
+    const goal = Number(calorieGoal) > 0 ? Number(calorieGoal) : 2000;
+    const remaining = goal - total;
+    const percentage = goal > 0 ? Math.round((total / goal) * 100) : 0;
     
     // Calculate actual macros from entries (no estimation fallback)
     let protein = 0;
@@ -51,7 +51,7 @@ function Analysis({ entries }) {
       hasActualMacros: protein > 0 || fat > 0 || carbs > 0,
       chartData
     };
-  }, [entries]);
+  }, [entries, calorieGoal]); // Recalculate when entries or goal changes
 
   const getStatusColor = (percentage) => {
     if (percentage < 80) return '#ffc107'; // Yellow - under goal
@@ -70,7 +70,7 @@ function Analysis({ entries }) {
         <div className={`${styles.statCard} ${styles.calorieCard}`}>
           <div className={styles.statHeader}>Total Calories</div>
           <div className={styles.statValue}>{stats.total}</div>
-          <div className={styles.statSubtext}>Goal: {CALORIE_GOAL}</div>
+          <div className={styles.statSubtext}>Goal: {Number(calorieGoal) || 2000}</div>
           
           <div className={styles.progressBar}>
             <div 

@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { getSummary } from '../api';
 import styles from './HistoricalTrends.module.css';
 
-function HistoricalTrends() {
+function HistoricalTrends({ calorieGoal }) {
   const [dateRange, setDateRange] = useState(7); // Default to 7 days
   const [summaryData, setSummaryData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [chartType, setChartType] = useState('calories'); // calories, macros, or combined
+  const [chartType, setChartType] = useState('calories'); // calories or macros
 
   // Calculate date range
   const endDate = new Date();
   const startDate = new Date();
-  startDate.setDate(endDate.getDate() - dateRange);
-
+  startDate.setDate(endDate.getDate() - dateRange + 1);
   const formatDate = (date) => date.toISOString().slice(0, 10);
+
+  const formatDateLabel = (dateStr) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return `${day}/${month}`;
+  };
 
   useEffect(() => {
     loadTrendData();
@@ -67,7 +71,7 @@ function HistoricalTrends() {
   const renderChart = () => {
     if (summaryData.length === 0) return null;
 
-    const maxCalories = Math.max(...summaryData.map(d => d.totalCalories), 2000);
+    const maxCalories = Math.max(...summaryData.map(d => d.totalCalories), calorieGoal);
     const maxMacro = Math.max(
       ...summaryData.map(d => Math.max(d.totalProtein, d.totalFat, d.totalCarbs)),
       100
@@ -79,7 +83,6 @@ function HistoricalTrends() {
           <h3>
             {chartType === 'calories' && 'Daily Calories'}
             {chartType === 'macros' && 'Daily Macronutrients'}
-            {chartType === 'combined' && 'Daily Overview'}
           </h3>
           <div className={styles.chartControls}>
             <button 
@@ -94,26 +97,20 @@ function HistoricalTrends() {
             >
               Macros
             </button>
-            <button 
-              className={chartType === 'combined' ? styles.active : ''}
-              onClick={() => setChartType('combined')}
-            >
-              Combined
-            </button>
           </div>
         </div>
 
         <div className={styles.chartArea}>
           {chartType === 'calories' && (
             <div className={styles.barChart}>
-              {summaryData.map((day, index) => (
+              {summaryData.map((day) => (
                 <div key={day.date} className={styles.chartBarContainer}>
                   <div 
                     className={`${styles.chartBar} ${styles.caloriesBar}`}
                     style={{
                       height: `${(day.totalCalories / maxCalories) * 200}px`,
-                      backgroundColor: day.totalCalories > 2000 ? '#dc3545' : 
-                                     day.totalCalories > 1600 ? '#28a745' : 
+                      backgroundColor: day.totalCalories > calorieGoal ? '#dc3545' : 
+                                     day.totalCalories > ((calorieGoal * 3) / 4) ? '#28a745' : 
                                      day.totalCalories > 0 ? '#ffc107' : '#e9ecef'
                     }}
                     title={`${day.totalCalories} calories on ${day.date}`}
@@ -121,7 +118,7 @@ function HistoricalTrends() {
                     <span className={styles.barValue}>{day.totalCalories}</span>
                   </div>
                   <div className={styles.chartLabel}>
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
+                    {formatDateLabel(day.date)}
                   </div>
                 </div>
               ))}
@@ -130,7 +127,7 @@ function HistoricalTrends() {
 
           {chartType === 'macros' && (
             <div className={styles.barChart}>
-              {summaryData.map((day, index) => (
+              {summaryData.map((day) => (
                 <div key={day.date} className={styles.chartBarContainer}>
                   <div className={styles.stackedBar}>
                     <div 
@@ -150,34 +147,7 @@ function HistoricalTrends() {
                     />
                   </div>
                   <div className={styles.chartLabel}>
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {chartType === 'combined' && (
-            <div className={styles.combinedChart}>
-              {summaryData.map((day, index) => (
-                <div key={day.date} className={styles.combinedBarContainer}>
-                  <div className={styles.combinedBar}>
-                    <div 
-                      className={styles.caloriesLine}
-                      style={{
-                        height: `${(day.totalCalories / maxCalories) * 200}px`,
-                        backgroundColor: '#007bff'
-                      }}
-                      title={`${day.totalCalories} calories`}
-                    />
-                  </div>
-                  <div className={styles.macroIndicators}>
-                    <div className={`${styles.macroDot} ${styles.proteinDot}`} title={`P: ${day.totalProtein}g`} />
-                    <div className={`${styles.macroDot} ${styles.fatDot}`} title={`F: ${day.totalFat}g`} />
-                    <div className={`${styles.macroDot} ${styles.carbsDot}`} title={`C: ${day.totalCarbs}g`} />
-                  </div>
-                  <div className={styles.chartLabel}>
-                    {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
+                    {formatDateLabel(day.date)}
                   </div>
                 </div>
               ))}
@@ -191,15 +161,15 @@ function HistoricalTrends() {
             <div className={styles.legendItems}>
               <span className={styles.legendItem}>
                 <span className={styles.legendColor} style={{ backgroundColor: '#28a745' }}></span>
-                On Track (1600-2000 cal)
+                On Track
               </span>
               <span className={styles.legendItem}>
                 <span className={styles.legendColor} style={{ backgroundColor: '#ffc107' }}></span>
-                Under Goal (&lt;1600 cal)
+                Under Goal (&lt;75% of goal)
               </span>
               <span className={styles.legendItem}>
                 <span className={styles.legendColor} style={{ backgroundColor: '#dc3545' }}></span>
-                Over Goal (&gt;2000 cal)
+                Over Goal (&gt;{calorieGoal} cal)
               </span>
             </div>
           )}

@@ -13,6 +13,8 @@ import {
   updateEntry,
   deleteEntry,
   registerUser,
+  getCalorieGoal,
+  updateCalorieGoal,
 } from './api';
 import AuthForm from './components/AuthForm';
 import EntryForm from './components/EntryForm';
@@ -23,6 +25,7 @@ import UserSettings from './components/UserSettings';
 import DateSelector from './components/DateSelector';
 import Analysis from './components/Analysis';
 import HistoricalTrends from './components/HistoricalTrends';
+import AISuggestions from './components/AISuggestions';
 import './App.css';
 
 function App() {
@@ -33,6 +36,7 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showTrends, setShowTrends] = useState(false);
+  const [calorieGoal, setCalorieGoal] = useState(2000);
   const [selectedDate, setSelectedDate] = useState(() => {
     return new Date().toISOString().slice(0, 10);
   });
@@ -64,6 +68,37 @@ function App() {
       loadEntries(selectedDate);
     }
   }, [selectedDate, user]);
+
+  // Handles updating the user's calorie goal
+  const saveUserCalorieGoal = async (newGoal) => {
+    const goalNumber = Number(newGoal);
+    if (Number.isNaN(goalNumber) || goalNumber <= 0) {
+      throw new Error('Calorie goal must be a positive number');
+    }
+
+    await updateCalorieGoal(goalNumber);
+    setCalorieGoal(goalNumber);
+  };
+  
+  // Load calorie goal when user changes
+  useEffect(() => {
+    if (!user) return;
+
+    const loadCalorieGoal = async () => {
+      try {
+        const data = await getCalorieGoal();
+        const goal = typeof data === 'object' && data !== null
+          ? (data.calorieGoal ?? 2000)
+          : (data ?? 2000);
+        setCalorieGoal(Number(goal) || 2000);
+      } catch (error) {
+        console.error('Failed to load calorie goal:', error);
+        setCalorieGoal(2000);
+      }
+    };
+
+    loadCalorieGoal();
+  }, [user]);
 
   // Load entries for selected date
   const loadEntries = async (date) => {
@@ -149,7 +184,9 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Calorie Track</h1>
+      <h1 onClick={() => setShowTrends(false)}
+        style={{ cursor: 'pointer'}}
+        >Calorie Track</h1>
       <UserHeader 
         user={user} 
         onSignOut={handleSignOut} 
@@ -157,15 +194,22 @@ function App() {
         onTrends={() => setShowTrends(!showTrends)}
       />
 
-      {showSettings && <UserSettings user={user} onClose={() => setShowSettings(false)} />}
+      {showSettings && (
+        <UserSettings
+          user={user}
+          calorieGoal={calorieGoal}
+          onUpdateCalorieGoal={saveUserCalorieGoal}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
 
       {showTrends ? (
-        <HistoricalTrends user={user} />
+        <HistoricalTrends user={user} calorieGoal={calorieGoal} />
       ) : (
         <>
           <DateSelector selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
-          <Analysis entries={entries} />
+          <Analysis entries={entries} calorieGoal={calorieGoal} />
 
           {editingId ? (
             <EditEntryForm
@@ -174,9 +218,15 @@ function App() {
               onCancel={() => setEditingId(null)}
             />
           ) : (
-            <EntryForm onAdd={handleSaveEntry} />
+            <div className="entry-form-ai-container">
+              <div className="entry-form-wrapper">
+                <EntryForm onAdd={handleSaveEntry} />
+              </div>
+              <div className="ai-suggestions-wrapper">
+                <AISuggestions entries={entries} />
+              </div>
+            </div>
           )}
-
           <EntryList
             entries={entries}
             onEdit={setEditingId}

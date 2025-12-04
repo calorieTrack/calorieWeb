@@ -29,7 +29,7 @@ describe('UserSettings component', () => {
     jest.clearAllMocks();
   });
 
-  test('renders initial values and Close Settings triggers onClose', async () => {
+  test('renders initial values and close button triggers onClose', async () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
     
@@ -38,7 +38,7 @@ describe('UserSettings component', () => {
     expect(screen.getByPlaceholderText('Enter display name')).toHaveValue('Alice');
     expect(screen.getByPlaceholderText('Enter email')).toHaveValue('alice@example.com');
 
-    await user.click(screen.getByRole('button', { name: /close settings/i }));
+    await user.click(screen.getByRole('button', { name: /✕/i }));
     expect(onClose).toHaveBeenCalled();
   });
 

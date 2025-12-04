@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   updateProfile,
   updateEmail,
@@ -7,7 +7,7 @@ import {
 import { auth } from '../firebase';
 import './UserSettings.css';
 
-function UserSettings({ user, onClose }) {
+function UserSettings({ user, onClose, calorieGoal = 2000, onUpdateCalorieGoal }) {
   const [displayName, setDisplayName] = useState(user.displayName || '');
   const [email, setEmail] = useState(user.email || '');
   const [newPassword, setNewPassword] = useState('');
@@ -16,6 +16,11 @@ function UserSettings({ user, onClose }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [calorieGoalInput, setCalorieGoalInput] = useState(calorieGoal || '');
+
+  useEffect(() => {
+    setCalorieGoalInput(calorieGoal ?? '');
+  }, [calorieGoal]);
 
   const handleUpdateDisplayName = async (e) => {
     e.preventDefault();
@@ -93,6 +98,38 @@ function UserSettings({ user, onClose }) {
     }
   };
 
+  const handleCalorieGoalUpdate = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+
+    if (!onUpdateCalorieGoal) {
+      setError('Calorie goal update is unavailable.');
+      return;
+    }
+
+    const goalNumber = Number(calorieGoalInput);
+    if (Number.isNaN(goalNumber) || goalNumber <= 0) {
+      setError('Please enter a positive number.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await onUpdateCalorieGoal(goalNumber);
+      setMessage('Calorie goal updated!');
+    } catch (err) {
+      setError(err.message || 'Failed to update calorie goal.');
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setError('');
+        setMessage('');
+      }, 4000);
+    }
+  };
+
   return (
     <div className="user-settings-overlay">
       <div className="user-settings-modal">
@@ -163,6 +200,27 @@ function UserSettings({ user, onClose }) {
             >
               Update Password
             </button>
+          </div>
+
+          {/* Calorie Goal Section */}
+          <div className="settings-section">
+            <h3>Daily Calorie Goal</h3>
+              <input
+                type="number"
+                min="1"
+                value={calorieGoalInput}
+                onChange={(e) => setCalorieGoalInput(e.target.value)}
+                placeholder="Enter daily calorie goal"
+                className="calorie-goal-input"
+              />
+              <button
+                type="submit"
+                onClick={handleCalorieGoalUpdate}
+                className="calorie-goal-button"
+                disabled={loading || Number(calorieGoalInput) === Number(calorieGoal)}
+              >
+                Update Goal
+              </button>
           </div>
         </form>
       </div>

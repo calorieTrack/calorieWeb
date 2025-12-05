@@ -3,6 +3,7 @@ import { auth } from './firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged,
   updateProfile,
@@ -40,6 +41,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(() => {
     return new Date().toISOString().slice(0, 10);
   });
+  const [failedLoginAttempts, setFailedLoginAttempts] = useState(0);
 
   // Auth state listener
   useEffect(() => {
@@ -129,9 +131,23 @@ function App() {
   const handleSignIn = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setFailedLoginAttempts(0); // Reset on success
       setShowAuth(false);
+      return { success: true };
     } catch (error) {
-      alert('Sign in failed: ' + error.message);
+      setFailedLoginAttempts(prev => prev + 1);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Reset password
+  const handleResetPassword = async (email) => {
+    if (!email) throw new Error('Please enter your email.');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      throw new Error(error.message);
     }
   };
 
@@ -176,7 +192,12 @@ function App() {
         {!showAuth ? (
           <button onClick={() => setShowAuth(true)}>Sign In / Sign Up</button>
         ) : (
-          <AuthForm onSignUp={handleSignUp} onSignIn={handleSignIn} />
+          <AuthForm 
+            onSignUp={handleSignUp} 
+            onSignIn={handleSignIn}
+            onResetPassword={handleResetPassword}
+            showForgotPassword={failedLoginAttempts >= 3}
+          />
         )}
       </div>
     );

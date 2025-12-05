@@ -37,15 +37,14 @@ jobs:
           EOF
         working-directory: backend.firebase
 
-      - name: Start backend server
-        run: npm start &
-        working-directory: backend.firebase
-        env:
-          NODE_ENV: test
-
-      - name: Wait for backend to be ready
+      - name: Start backend server and wait for ready
         run: |
-          timeout 30 bash -c 'until curl -f http://localhost:4000/api/health; do sleep 1; done' || exit 1
+          cd backend.firebase
+          nohup npm start > backend.log 2>&1 &
+          echo $! > backend.pid
+          cd ..
+          echo "Waiting for backend to start..."
+          timeout 60 bash -c 'until curl -sf http://localhost:4000/health; do echo "Retrying..."; sleep 2; done' || (cat backend.firebase/backend.log && exit 1)
 
       - name: Run unit tests
         run: npm run test:unit --if-present

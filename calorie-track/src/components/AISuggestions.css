@@ -9,6 +9,9 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 100%;
   box-sizing: border-box;
+  /* ensure AI panel doesn't unintentionally cover other interactive dropdowns */
+  position: relative;
+  z-index: 100;
 }
 
 .ai-suggestions-header {
@@ -199,6 +202,8 @@
   .ai-suggestions {
     padding: 0.875rem;
     border-radius: 8px;
+    /* lower stacking in mobile so floating dropdowns can appear above */
+    z-index: 90;
   }
 
   .ai-suggestions-textbox {

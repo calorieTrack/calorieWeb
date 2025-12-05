@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getFoodSuggestions, searchUSDAFoods } from '../api';
+import DropdownPortal from './DropdownPortal';
 import './EntryForm.css';
 
 function EntryForm({ onAdd }) {
@@ -16,6 +17,7 @@ function EntryForm({ onAdd }) {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [searchingUSDA, setSearchingUSDA] = useState(false);
   const [usdaDataTypes, setUsdaDataTypes] = useState(['Foundation', 'SR Legacy']); // Default data types
+  const nameInputRef = useRef(null);
 
   // Calculate adjusted nutrition values based on quantity (only for weight units)
   const getAdjustedNutrition = (baseNutrition, inputQuantity) => {
@@ -31,7 +33,7 @@ function EntryForm({ onAdd }) {
     
     const quantityNum = parseFloat(weightMatch[1]);
     const unit = weightMatch[2];
-    
+
     // Convert to grams
     let gramsQuantity;
     switch (unit) {
@@ -57,6 +59,7 @@ function EntryForm({ onAdd }) {
       carbs: Math.round(baseNutrition.carbs * ratio * 10) / 10
     };
   };
+  
 
   // Combined search: local autocomplete + USDA results
   useEffect(() => {
@@ -236,11 +239,12 @@ function EntryForm({ onAdd }) {
           placeholder="Type a food name..."
           required
           autoComplete="off"
+          ref={nameInputRef}
         />
         
         {/* Food Suggestions */}
         {showSuggestions && name.trim().length > 0 && (
-          <div className="food-suggestions-dropdown">
+          <DropdownPortal anchorRef={nameInputRef} visible={showSuggestions} className="food-suggestions-dropdown">
             {/* Debug info 
             {process.env.NODE_ENV === 'development' && (
               <div style={{fontSize: '12px', color: '#888', padding: '4px', background: '#f0f0f0'}}>
@@ -280,95 +284,95 @@ function EntryForm({ onAdd }) {
                   USDA Database {searchingUSDA && <span className="loading">Searching...</span>}
                 </div>
                 <div className="data-type-checkboxes-inline">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={usdaDataTypes.includes('Foundation')}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setUsdaDataTypes([...usdaDataTypes, 'Foundation']);
-                          } else {
-                            setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Foundation'));
-                          }
-                        }}
-                      />
-                      <span>Foundation</span>
-                    </label>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={usdaDataTypes.includes('SR Legacy')}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setUsdaDataTypes([...usdaDataTypes, 'SR Legacy']);
-                          } else {
-                            setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'SR Legacy'));
-                          }
-                        }}
-                      />
-                      <span>SR Legacy</span>
-                    </label>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={usdaDataTypes.includes('Branded')}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setUsdaDataTypes([...usdaDataTypes, 'Branded']);
-                          } else {
-                            setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Branded'));
-                          }
-                        }}
-                      />
-                      <span>Branded</span>
-                    </label>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={usdaDataTypes.includes('Survey (FNDDS)')}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setUsdaDataTypes([...usdaDataTypes, 'Survey (FNDDS)']);
-                          } else {
-                            setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Survey (FNDDS)'));
-                          }
-                        }}
-                      />
-                      <span>Survey</span>
-                    </label>
-                  </div>
-                  <span className="usda-note">• Nutrition values per 100g</span>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={usdaDataTypes.includes('Foundation')}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setUsdaDataTypes([...usdaDataTypes, 'Foundation']);
+                        } else {
+                          setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Foundation'));
+                        }
+                      }}
+                    />
+                    <span>Foundation</span>
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={usdaDataTypes.includes('SR Legacy')}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setUsdaDataTypes([...usdaDataTypes, 'SR Legacy']);
+                        } else {
+                          setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'SR Legacy'));
+                        }
+                      }}
+                    />
+                    <span>SR Legacy</span>
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={usdaDataTypes.includes('Branded')}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setUsdaDataTypes([...usdaDataTypes, 'Branded']);
+                        } else {
+                          setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Branded'));
+                        }
+                      }}
+                    />
+                    <span>Branded</span>
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={usdaDataTypes.includes('Survey (FNDDS)')}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setUsdaDataTypes([...usdaDataTypes, 'Survey (FNDDS)']);
+                        } else {
+                          setUsdaDataTypes(usdaDataTypes.filter(t => t !== 'Survey (FNDDS)'));
+                        }
+                      }}
+                    />
+                    <span>Survey</span>
+                  </label>
                 </div>
-                {usdaSuggestions.length > 0 ? (
-                  usdaSuggestions.map((food) => (
-                    <div
-                      key={`usda-${food.fdcId}`}
-                      className={`suggestion-item usda-suggestion ${!food.hasNutrients ? 'limited-nutrition' : ''}`}
-                      onClick={() => handleUSDASelect(food)}
-                    >
-                      <div className="food-name">{food.name}</div>
-                      <div className="food-meta">
-                        <span className="food-type">{food.dataType}</span>
-                        {food.brandOwner && <span className="brand-owner"> • {food.brandOwner}</span>}
-                        {food.hasNutrients ? (
-                          <span className="nutrition-preview">
-                            {food.calories} kcal • P: {food.protein}g • F: {food.fat}g • C: {food.carbs}g
-                          </span>
-                        ) : (
-                          <span className="nutrition-warning"> • Limited nutrition data</span>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  !searchingUSDA && (
-                    <div className="suggestion-item no-results">
-                      <div className="food-name">No results found</div>
-                      <div className="food-meta">Try adjusting the data types above or enter manually below</div>
-                    </div>
-                  )
-                )}
+                <span className="usda-note">• Nutrition values per 100g</span>
               </div>
+              {usdaSuggestions.length > 0 ? (
+                usdaSuggestions.map((food) => (
+                  <div
+                    key={`usda-${food.fdcId}`}
+                    className={`suggestion-item usda-suggestion ${!food.hasNutrients ? 'limited-nutrition' : ''}`}
+                    onClick={() => handleUSDASelect(food)}
+                  >
+                    <div className="food-name">{food.name}</div>
+                    <div className="food-meta">
+                      <span className="food-type">{food.dataType}</span>
+                      {food.brandOwner && <span className="brand-owner"> • {food.brandOwner}</span>}
+                      {food.hasNutrients ? (
+                        <span className="nutrition-preview">
+                          {food.calories} kcal • P: {food.protein}g • F: {food.fat}g • C: {food.carbs}g
+                        </span>
+                      ) : (
+                        <span className="nutrition-warning"> • Limited nutrition data</span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                !searchingUSDA && (
+                  <div className="suggestion-item no-results">
+                    <div className="food-name">No results found</div>
+                    <div className="food-meta">Try adjusting the data types above or enter manually below</div>
+                  </div>
+                )
+              )}
+            </div>
             
             {/* Manual entry option */}
             <div className="suggestion-section">
@@ -383,7 +387,7 @@ function EntryForm({ onAdd }) {
                   <div className="food-meta">For custom foods or if not found above</div>
                 </div>
             </div>
-          </div>
+          </DropdownPortal>
         )}
       </div>
 

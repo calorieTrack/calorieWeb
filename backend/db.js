@@ -9,6 +9,10 @@ const db = new Database(dbPath);
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
 
+// WAL (Write-Ahead Logging) allows readers and writers to work simultaneously
+db.pragma('journal_mode = WAL');
+db.pragma('synchronous = NORMAL');
+
 // Create users table
 db.prepare(`
   CREATE TABLE IF NOT EXISTS users (

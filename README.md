@@ -1,99 +1,168 @@
 # CalorieWeb
 
-A modern calorie tracking web application with real-time USDA nutrition data integration, built with React and Node.js.
+A modern calorie-tracking web application with real-time USDA nutrition data integration, AI-powered suggestions, and comprehensive nutrition tracking.
 
 ## Features
 
-- 🔐 **Firebase Authentication** - Secure user authentication and authorization
-# CalorieWeb
+- 🔐 **Firebase Authentication** - Secure user authentication with password reset
+- 📊 **Nutrition Tracking** - Track calories, protein, fat, and carbs for each meal
+- 🔍 **USDA Integration** - Search 200k+ foods from USDA FoodData Central database
+- 🤖 **AI Suggestions** - Personalized nutrition recommendations powered by Google Gemini
+- 📈 **Historical Trends** - Visualize nutrition patterns over time with interactive charts
+- 💾 **Smart Autocomplete** - Food suggestions based on your history
+- 🎯 **Daily Goals** - Set and track custom calorie goals
+- 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
 
-A modern calorie-tracking web application with USDA nutrition integration.
-
-This README focuses on getting the project running locally, testing, and where to look for key pieces of the codebase.
-
---
+---
 
 ## Quick Start
 
-Prerequisites: Node.js 18+, npm (or yarn), Firebase project, and USDA API key.
+**Prerequisites:** Node.js 18+, npm, Firebase project, USDA API key, and Google Gemini API key
 
-1) Clone and install
+### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/calorieWeb.git
+git clone https://github.com/mingww64/calorieWeb.git
 cd calorieWeb
 ```
 
-2) Start backend
+### 2. Choose Your Backend
+
+Backend is being migrated from SQLite (validated) to Firestore (testing).
+APIs are implemented identically.
 
 ```bash
-cd backend
+cd backend # or backend.firebase
 npm install
-# create .env following backend/README or API.md (see notes below)
+# Create .env file (see Configuration below)
 npm run dev
 ```
 
-3) Start frontend
+Backend runs at: `http://localhost:4000`
+
+### 3. Start Frontend
 
 ```bash
 cd calorie-track
 npm install
-# create src/config.js with API_BASE_URL and firebaseConfig, or refer to src/.env
+# Create src/config.js (see Configuration below)
 npm run dev
 ```
 
-Open: `http://localhost:5173`
+Frontend opens at: `http://localhost:5173`
 
---
+---
 
-## Configuration notes
+## Configuration
 
-- Backend expects environment variables in `backend/.env` (PORT, FIREBASE_* keys, USDA_API_KEY). See `backend/API.md` for details.
-- Frontend requires `src/config.js` with `API_BASE_URL` and `firebaseConfig` (Firebase web app settings). 
-  - Alternatively, provide them as environmental variables as in `src/.env`
+### Backend Configuration
 
---
+Create `.env` in specific backend folder:
+
+```env
+# Server
+PORT=4000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# Firebase Admin (get from Firebase Console → Project Settings → Service Accounts)
+FIREBASE_SERVICE_ACCOUNT_KEY='{"type":"service_account","project_id":"...","private_key":"..."}'
+
+# USDA API (get free key from https://fdc.nal.usda.gov/api-key-signup.html)
+USDA_API_KEY=your_usda_api_key
+
+# Google Gemini API (get from https://makersuite.google.com/app/apikey)
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+### Frontend Configuration
+
+Create `calorie-track/src/config.js`, or use `src/.env` with preconfigured config.js:
+
+```javascript
+export const API_URL = 'http://localhost:4000';
+
+export const firebaseConfig = {
+  apiKey: "your_firebase_web_api_key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+};
+```
+
+Get Firebase web config from: Firebase Console → Project Settings → General → Your apps
+
+
+---
+
 
 ## Running Tests
 
-- Unit tests (frontend):
+### Frontend Tests
 
+**Unit tests (Jest + React Testing Library):**
 ```bash
 cd calorie-track
 npm run test:unit
 ```
 
-- End-to-end tests (puppeteer):
-
+**E2E tests (Puppeteer):**
 ```bash
 cd calorie-track
 npm run test:e2e
 ```
 
---
+### Backend Tests
 
-## Key Files
+**Firebase backend (Jest + Supertest):**
+```bash
+cd backend.firebase
+npm test
+```
 
-- Frontend: `calorie-track/src/components/` — UI components (Analysis, EntryForm, EntryList, etc.)
-- Backend: `backend/index.js`, `backend/db.js`, `backend/usda.js` — API and DB logic
-- API docs: `backend/API.md`
+---
 
---
+## API Documentation
 
-## Development tips
+Complete API documentation is in `API.md` at the project root.
 
-- Use the browser devtools responsive view for tablet/phone layout checks.
-- Charts use `recharts` — hover handlers exist to link chart slices to UI elements in `Analysis.jsx`.
-- CSS Modules keep styles local; edit `*.module.css` files next to components.
+**Key Endpoints:**
+- `POST /api/auth/register` - Register new user
+- `GET /api/entries?date=YYYY-MM-DD` - Get food entries
+- `POST /api/entries` - Create food entry
+- `GET /api/foods/search/usda?q=query` - Search USDA database
+- `GET /api/ai/aisuggestions` - Get AI nutrition suggestions
+- `GET /api/summary?startDate=...&endDate=...` - Get nutrition summary
 
---
+All protected endpoints require Firebase ID token in `Authorization: Bearer <token>` header.
 
-## Contributing
+---
 
-Fork, create a branch, and open a PR. Keep changes scoped and add tests for behavior where possible.
 
---
+## Deployment
+
+### Backend Deployment Options
+
+**Railway** (Recommended):
+1. Connect GitHub repo to Railway
+2. Add environment variables from `.env`
+3. Deploy automatically on push
+
+**Other options:** Render, Fly.io, Heroku, AWS, Google Cloud Run
+
+### Frontend Deployment Options
+
+**Vercel/Netlify** (Recommended):
+1. Connect GitHub repo
+2. Set build command: `npm run build`
+3. Set output directory: `dist`
+4. Add environment variables
+
+
+---
 
 ## License
 
-MIT — see `LICENSE`.
+MIT License - see `LICENSE` file for details.

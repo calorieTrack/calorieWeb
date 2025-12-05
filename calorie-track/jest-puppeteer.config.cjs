@@ -5,7 +5,7 @@ const isCI = process.env.CI === 'true';
 // Result:
 module.exports = {
   launch: {
-    headless: true,
+    headless: false,
     slowMo: 50,
     args: isCI ? [
       '--no-sandbox',

@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
-    "test:e2e": "jest --selectProjects e2e"
+    "test:e2e": "jest --selectProjects e2e --runInBand"
   },
   "dependencies": {
     "firebase": "^12.6.0",

@@ -120,7 +120,7 @@ export const getFoods = () =>
 export const searchUSDAFoods = (query, limit = 10, dataTypes = null) => {
   let url = `/api/foods/search/usda?q=${encodeURIComponent(query)}`;
   if (dataTypes && dataTypes.length > 0) {
-    url += `&dataTypes=${dataTypes.join(',')}`;
+    url += `&dataTypes=${dataTypes.map(encodeURIComponent).join(',')}`;
   }
   return apiFetch(url);
 };
@@ -144,8 +144,22 @@ export const updateCalorieGoal = (calorieGoal) =>
   });
 
 /**
- * Get AI nutrition suggestions based on user's last 7 days of nutrition data
- * Returns: { suggestions: string, nutritionSummary: {...} }
+ * Get AI nutrition suggestions based on user's nutrition data
+ * @param {string} startDate - Optional start date (YYYY-MM-DD)
+ * @param {string} endDate - Optional end date (YYYY-MM-DD)
+ * Returns: { suggestions: array, totals: {...} }
  */
-export const getAISuggestions = () =>
-  apiFetch('/api/ai/aisuggestions');
+export const getAISuggestions = (startDate = '', endDate = '') => {
+  let url = '/api/ai/aisuggestions';
+  const params = new URLSearchParams();
+  if (startDate) {
+    params.append('startDate', startDate);
+  }
+  if (endDate) {
+    params.append('endDate', endDate);
+  }
+  if (params.toString()) {
+    url += `?${params.toString()}`;
+  }
+  return apiFetch(url);
+};

@@ -1,6 +1,13 @@
 # API Documentation
 
-Base URL: `http://localhost:4000` (development) or your deployed backend URL
+**Base URL:** `http://localhost:4000` (development) or your deployed backend URL
+
+**Backend Versions:**
+- `backend/` - SQLite database (synchronous, stable)
+- `backend.firebase/` - Firestore database (async, unstable)
+
+Both backends implement identical APIs.
+---
 
 ## Authentication
 
@@ -493,7 +500,7 @@ Search the USDA FoodData Central database for foods with detailed nutrition info
     - `Foundation` - Core foods with detailed nutrient composition
     - `SR Legacy` - Standard Reference foods (legacy database)
     - `Branded` - Branded food products
-    - `Survey (FNDDS)` - USDA Food and Nutrient Database for Dietary Studies
+    - `Survey (FNDDS)`(include parentheses) - USDA Food and Nutrient Database for Dietary Studies
 - `limit` (optional): Maximum results to return, defaults to 10
 
 **Headers:**

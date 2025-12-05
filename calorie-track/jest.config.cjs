@@ -11,7 +11,8 @@
         "\\.(css|less|scss|sass)$": "identity-obj-proxy",
         "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js"
       },
-      testMatch: ["<rootDir>/src/components/__tests__/*.test.jsx"] // Standard Unit tests
+      testMatch: ["<rootDir>/src/components/__tests__/*.test.jsx"], // Standard Unit tests
+      setupFilesAfterEnv: ["<rootDir>/jest.setup.unit.js"],
     },
     {
       displayName: "e2e",

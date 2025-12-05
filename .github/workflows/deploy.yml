@@ -9,6 +9,7 @@ on:
 jobs:
   test-frontend:
     name: Test Frontend
+    environment: backend
     runs-on: ubuntu-latest
     env:
       CI: true
@@ -27,6 +28,10 @@ jobs:
 
       - name: Install backend dependencies
         run: npm ci
+        working-directory: backend.firebase
+
+      - name: Create backend .env file
+        run: echo "${{ secrets.BACKEND_ENV }}" > .env
         working-directory: backend.firebase
 
       - name: Start backend server

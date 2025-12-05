@@ -31,7 +31,10 @@ jobs:
         working-directory: backend.firebase
 
       - name: Create backend .env file
-        run: echo "${{ secrets.BACKEND_ENV }}" > .env
+        run: |
+          cat << 'EOF' > .env
+          ${{ secrets.BACKEND_ENV }}
+          EOF
         working-directory: backend.firebase
 
       - name: Start backend server

@@ -7,6 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import {
   getEntries,
@@ -120,6 +121,14 @@ function App() {
       // Update user profile with displayName
       if (displayName) {
         await updateProfile(userCredential.user, { displayName });
+      }
+      try {
+        await sendEmailVerification(userCredential.user);
+        // notify user that verification email has been sent
+        alert('A verification email has been sent to ' + email + '. Please check your inbox (and spam).');
+      } catch (err) {
+        console.warn('Failed to send verification email:', err);
+        alert('Account created but we could not send a verification email: ' + err.message);
       }
       setShowAuth(false);
     } catch (error) {

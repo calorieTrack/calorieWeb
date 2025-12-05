@@ -21,17 +21,35 @@ jobs:
         with:
           node-version: 'latest'
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm ci
         working-directory: calorie-track
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend.firebase
+
+      - name: Start backend server
+        run: npm start &
+        working-directory: backend.firebase
+        env:
+          NODE_ENV: test
+
+      - name: Wait for backend to be ready
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:4000/api/health; do sleep 1; done' || exit 1
 
       - name: Run unit tests
         run: npm run test:unit --if-present
         working-directory: calorie-track
+        env:
+          VITE_API_URL: http://localhost:4000
 
       - name: Run e2e tests
         run: npm run test:e2e --if-present
         working-directory: calorie-track
+        env:
+          VITE_API_URL: http://localhost:4000
 
   test-backend-firebase:
     name: Test Backend (Firebase)

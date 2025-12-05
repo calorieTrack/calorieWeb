@@ -15,6 +15,8 @@ module.exports = {
     ] : [],
   },
   
+  browserContext: 'default', // Reuse same browser instance instead of creating new contexts
+  
   server: {
     command: 'npm start', 
     port: 5173,

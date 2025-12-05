@@ -52,7 +52,7 @@ function AISuggestions() {
                         <ul>
                             {suggestions.suggestions.map((it, idx) => (
                                 <li key={idx} className="ai-suggestion-item">
-                                    <span className="ai-suggestion-name">{it.name}</span>
+                                    <span className="ai-suggestion-name">{it.name}. </span>
                                     <span className="ai-suggestion-rationale">{it.rationale}</span>
                                 </li>
                             ))}

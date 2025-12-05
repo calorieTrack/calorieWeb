@@ -52,8 +52,9 @@ describe('User Registration Flow', () => {
     const foodNameInput = await page.locator('#name');
     await foodNameInput.fill('Test Apple');
 
-    const manualOption = await page.locator("::-p-text(📝 Enter nutrition data manually)");
+    const manualOption = await page.locator("::-p-text(Enter nutrition data manually)");
     await manualOption.click();
+    
     const quantityInput = await page.locator('#quantity');
     await quantityInput.fill('1 item');
 

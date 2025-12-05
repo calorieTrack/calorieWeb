@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getAISuggestions } from '../api';
 import './AISuggestions.css';
 
-function AISuggestions() {
+function AISuggestions({ selectedDate }) {
     const [suggestions, setSuggestions] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ function AISuggestions() {
         setLoading(true);
         setError(null);
         try {
-            const data = await getAISuggestions();
+            const data = await getAISuggestions(selectedDate);
             setSuggestions(data);
         } catch (err) {
             console.error('Failed to fetch AI suggestions:', err.message);
@@ -23,7 +23,7 @@ function AISuggestions() {
 
     useEffect(() => {
         fetchSuggestions();
-    }, []);
+    }, [selectedDate]);
 
     return (
         <div className="ai-suggestions">

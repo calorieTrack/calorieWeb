@@ -3,6 +3,8 @@ import {
   updateProfile,
   updateEmail,
   updatePassword,
+  verifyBeforeUpdateEmail,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { auth } from '../firebase';
 import './UserSettings.css';
@@ -48,12 +50,24 @@ function UserSettings({ user, onClose, calorieGoal = 2000, onUpdateCalorieGoal }
 
     try {
       if (email.trim() && email !== user.email) {
-        await updateEmail(user, email.trim());
-        setMessage('Email updated successfully!');
+        if (typeof verifyBeforeUpdateEmail === 'function') {
+          await verifyBeforeUpdateEmail(user, email.trim());
+          setMessage(
+            'Verification sent to the new email. Please check that inbox (and spam) and click the verification link to complete the change.'
+          );
+        } else {
+          // Fallback for environments or SDK versions without verifyBeforeUpdateEmail for jest testing
+          await updateEmail(user, email.trim());
+          setMessage('Email updated successfully.');
+        }
       }
     } catch (err) {
       if (err.code === 'auth/requires-recent-login') {
         setError('Please sign out and sign in again before changing your email.');
+      } else if (err.code === 'auth/operation-not-allowed' || (err.message && err.message.includes('Please verify the new email'))) {
+        setError(
+          'Failed to update email: the new email address must be verified before it can be applied.'
+        );
       } else {
         setError('Failed to update email: ' + err.message);
       }
@@ -130,6 +144,22 @@ function UserSettings({ user, onClose, calorieGoal = 2000, onUpdateCalorieGoal }
     }
   };
 
+  const handleResendVerification = async () => {
+    setLoading(true);
+    setError('');
+    setMessage('');
+
+    try {
+      if (!user) throw new Error('No user available');
+      await sendEmailVerification(user);
+      setMessage('Verification email sent. Please check your inbox (and spam).');
+    } catch (err) {
+      setError('Failed to send verification email: ' + (err.message || err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="user-settings-overlay">
       <div className="user-settings-modal">
@@ -176,6 +206,23 @@ function UserSettings({ user, onClose, calorieGoal = 2000, onUpdateCalorieGoal }
             >
               Update Email
             </button>
+            <div className="email-verification">
+              {user?.emailVerified ? (
+                <div className="email-status verified">Email verified</div>
+              ) : (
+                <div className="email-actions">
+                  <div className="email-status unverified">Email not verified</div>
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={loading}
+                    className="resend-button"
+                  >
+                    Resend Verification
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Password Section */}

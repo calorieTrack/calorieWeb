@@ -1,18 +1,48 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
 
-function AuthForm({ onSignUp, onSignIn }) {
+function AuthForm({ onSignUp, onSignIn, onResetPassword, showForgotPassword }) {
   const [mode, setMode] = useState('signin'); // 'signin' or 'signup'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [displayName, setDisplayName] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (mode === 'signin') {
-      onSignIn(email, password);
-    } else {
-      onSignUp(email, password, displayName);
+    setError('');
+    setInfo('');
+    
+    try {
+      if (mode === 'signin') {
+        const result = await onSignIn(email, password);
+        if (!result?.success) {
+          setError(result?.error || 'Sign in failed');
+        }
+      } else {
+        await onSignUp(email, password, displayName);
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred');
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setError('');
+    setInfo('');
+    
+    if (!email) {
+      setError('Please enter your email to reset your password.');
+      return;
+    }
+    
+    try {
+      await onResetPassword?.(email);
+      setInfo('Password reset email sent. Check your inbox.');
+    } catch (err) {
+      setError(err.message || 'Failed to send reset email.');
     }
   };
 
@@ -34,6 +64,13 @@ function AuthForm({ onSignUp, onSignIn }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        {error && <p className="error">{error}</p>}
+        {info && <p className="info">{info}</p>}
+        {mode === 'signin' && showForgotPassword && onResetPassword && (
+          <button type="button" className="link-button" onClick={handleForgotPassword}>
+            Forgot password?
+          </button>
+        )}
         {mode === 'signup' && (
           <input
             type="text"

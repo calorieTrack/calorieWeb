@@ -110,6 +110,49 @@
   cursor: not-allowed;
 }
 
+/* Email verification area */
+.email-verification {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center; /* center the contents horizontally */
+}
+
+.email-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.email-status {
+  font-size: 0.95rem;
+}
+
+.email-status.verified {
+  color: #22c55e;
+}
+
+.email-status.unverified {
+  color: #f59e0b;
+}
+
+.settings-section .resend-button {
+  /* Higher-specificity selector so it overrides `.settings-section button` defaults */
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.12rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #646cff;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  height: 2.4em;
+}
+
+.settings-section .resend-button:hover:not(:disabled) {
+  background-color: #535bf2;
+}
+
 .settings-message {
   padding: 0.75rem;
   margin-bottom: 1rem;

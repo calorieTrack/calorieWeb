@@ -1,8 +1,19 @@
+const isCI = process.env.CI === 'true';
+
 module.exports = {
   launch: {
-    headless: false,
+    // Run headless in CI environments, otherwise run headed for easier local debugging
+    headless: isCI ? true : false,
     slowMo: 50,
+    args: isCI ? [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+    ] : [],
   },
+  
+  browserContext: 'default', // Reuse same browser instance instead of creating new contexts
   
   server: {
     command: 'npm start', 

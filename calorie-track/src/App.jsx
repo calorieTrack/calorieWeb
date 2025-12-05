@@ -3,9 +3,11 @@ import { auth } from './firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import {
   getEntries,
@@ -40,6 +42,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(() => {
     return new Date().toISOString().slice(0, 10);
   });
+  const [failedLoginAttempts, setFailedLoginAttempts] = useState(0);
 
   // Auth state listener
   useEffect(() => {
@@ -119,6 +122,14 @@ function App() {
       if (displayName) {
         await updateProfile(userCredential.user, { displayName });
       }
+      try {
+        await sendEmailVerification(userCredential.user);
+        // notify user that verification email has been sent
+        alert('A verification email has been sent to ' + email + '. Please check your inbox (and spam).');
+      } catch (err) {
+        console.warn('Failed to send verification email:', err);
+        alert('Account created but we could not send a verification email: ' + err.message);
+      }
       setShowAuth(false);
     } catch (error) {
       alert('Sign up failed: ' + error.message);
@@ -129,9 +140,23 @@ function App() {
   const handleSignIn = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setFailedLoginAttempts(0); // Reset on success
       setShowAuth(false);
+      return { success: true };
     } catch (error) {
-      alert('Sign in failed: ' + error.message);
+      setFailedLoginAttempts(prev => prev + 1);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Reset password
+  const handleResetPassword = async (email) => {
+    if (!email) throw new Error('Please enter your email.');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      throw new Error(error.message);
     }
   };
 
@@ -176,7 +201,12 @@ function App() {
         {!showAuth ? (
           <button onClick={() => setShowAuth(true)}>Sign In / Sign Up</button>
         ) : (
-          <AuthForm onSignUp={handleSignUp} onSignIn={handleSignIn} />
+          <AuthForm 
+            onSignUp={handleSignUp} 
+            onSignIn={handleSignIn}
+            onResetPassword={handleResetPassword}
+            showForgotPassword={failedLoginAttempts >= 3}
+          />
         )}
       </div>
     );
@@ -223,7 +253,7 @@ function App() {
                 <EntryForm onAdd={handleSaveEntry} />
               </div>
               <div className="ai-suggestions-wrapper">
-                <AISuggestions />
+                <AISuggestions selectedDate={selectedDate} />
               </div>
             </div>
           )}

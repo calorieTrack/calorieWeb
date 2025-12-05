@@ -7,6 +7,8 @@ function HistoricalTrends({ calorieGoal }) {
   const [summaryData, setSummaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chartType, setChartType] = useState('calories'); // calories or macros
+  
+  const iconStyle = { verticalAlign: 'bottom' };
 
   // Calculate date range
   const endDate = new Date();
@@ -206,7 +208,7 @@ function HistoricalTrends({ calorieGoal }) {
     <div className={styles.historicalTrends}>
       <div className={styles.trendsHeader}>
         <h2>
-          <span className="material-symbols-outlined" aria-hidden>bar_chart</span>
+          <span className="material-symbols-outlined" style={iconStyle} aria-hidden="true">bar_chart</span>
           Historical Trends
         </h2>
         <div className={styles.dateRangeSelector}>
@@ -270,9 +272,9 @@ function HistoricalTrends({ calorieGoal }) {
                     <tr key={day.date}>
                       <td>{new Date(day.date).toLocaleDateString()}</td>
                       <td>{day.totalCalories}</td>
-                      <td>{day.totalProtein}g</td>
-                      <td>{day.totalFat}g</td>
-                      <td>{day.totalCarbs}g</td>
+                      <td>{(Math.round(day.totalProtein * 10) / 10).toFixed(1)}g</td>
+                      <td>{(Math.round(day.totalFat * 10) / 10).toFixed(1)}g</td>
+                      <td>{(Math.round(day.totalCarbs * 10) / 10).toFixed(1)}g</td>
                       <td>{day.entryCount}</td>
                     </tr>
                   ))}

@@ -1,20 +1,20 @@
 {
-  "name": "calorie-track-backend",
+  "name": "calorie-track-backend-firebase",
   "version": "1.0.0",
-  "description": "Calorie Track API with Firebase Auth",
+  "description": "Calorie Track API with Firebase (Firestore + Auth)",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^1.31.0",
-    "better-sqlite3": "^12.5.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -22,6 +22,8 @@
     "firebase-admin": "^13.6.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
   }
 }

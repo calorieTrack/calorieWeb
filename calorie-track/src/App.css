@@ -162,9 +162,14 @@ button:disabled:hover {
     gap: 1rem;
   }
   
-  .entry-form-wrapper,
+  .entry-form-wrapper {
+    width: 100%;
+    z-index: 2;
+  }
+  
   .ai-suggestions-wrapper {
     width: 100%;
+    z-index: 1;
   }
 }
 

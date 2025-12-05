@@ -1,7 +1,15 @@
+const isCI = process.env.CI === 'true';
+
 module.exports = {
   launch: {
     headless: true,
     slowMo: 50,
+    args: isCI ? [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+    ] : [],
   },
   
   server: {

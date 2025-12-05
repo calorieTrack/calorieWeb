@@ -36,9 +36,14 @@
   padding: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
   color: inherit;
   font-size: 0.9rem;
+}
+
+.dateRangeSelector select option {
+  background: #1a1a1a;
+  color: inherit;
 }
 
 .chartContainer {

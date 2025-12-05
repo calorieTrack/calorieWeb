@@ -1,7 +1,15 @@
-# CalorieWeb
+# CalorieWeb [![Build, Test, and Deploy](https://img.shields.io/github/actions/workflow/status/mingww64/calorieWeb/deploy.yml?branch=main&logo=githubactions&logoColor=white)](https://github.com/mingww64/calorieWeb/actions/workflows/deploy.yml)
 
 A modern calorie-tracking web application with real-time USDA nutrition data integration, AI-powered suggestions, and comprehensive nutrition tracking.
 
+![Dependabot](https://img.shields.io/badge/dependabot-025E8C?style=for-the-badge&logo=dependabot&logoColor=white)
+![firebase](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Puppeteer](https://img.shields.io/badge/Puppeteer-%2340B5A4.svg?style=for-the-badge&logo=Puppeteer&logoColor=black)
+![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white)
+![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
 ## Features
 
 - 🔐 **Firebase Authentication** - Secure user authentication with password reset
@@ -141,27 +149,12 @@ All protected endpoints require Firebase ID token in `Authorization: Bearer <tok
 ---
 
 
-## Deployment
+## Public Instance
+> Free Instance: backend might need time to spin up.
 
-### Backend Deployment Options
-
-**Railway** (Recommended):
-1. Connect GitHub repo to Railway
-2. Add environment variables from `.env`
-3. Deploy automatically on push
-
-**Other options:** Render, Fly.io, Heroku, AWS, Google Cloud Run
-
-### Frontend Deployment Options
-
-**Vercel/Netlify** (Recommended):
-1. Connect GitHub repo
-2. Set build command: `npm run build`
-3. Set output directory: `dist`
-4. Add environment variables
+- [Github Pages](https://calorietrack.github.io/calorieWeb/)
 
 
----
 
 ## License
 

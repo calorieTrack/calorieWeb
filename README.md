@@ -1,4 +1,4 @@
-# CalorieWeb [![Build, Test, and Deploy](https://img.shields.io/github/actions/workflow/status/mingww64/calorieWeb/deploy.yml?branch=main&logo=githubactions&logoColor=white)](https://github.com/mingww64/calorieWeb/actions/workflows/deploy.yml)
+# CalorieWeb [![Build, Test, and Deploy](https://img.shields.io/github/actions/workflow/status/calorietrack/calorieWeb/deploy.yml?branch=main&logo=githubactions&logoColor=white)](https://github.com/calorietrack/calorieWeb/actions/workflows/deploy.yml)
 
 A modern calorie-tracking web application with real-time USDA nutrition data integration, AI-powered suggestions, and comprehensive nutrition tracking.
 
@@ -135,12 +135,20 @@ npm test
 
 ## Diagrams
 
-
+### ERD
 ![Entity-Relationship Diagram](Diagram_1.png)
 Above is an entity-relationship diagram that displays the entities' relationships between one another in the project.
 
+### Sequence
 ![Sequence Diagram](Diagram_2.png)
 Above depicts a typical behavior of the program when a user wants to log in and add an entry.
+
+### React State Management
+> [!NOTE]
+> Lift State to Root Component with React Hooks
+
+![](liftState-caltrack.drawio.svg)
+
 
 ## API Documentation
 

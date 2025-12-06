@@ -1,4 +1,6 @@
 describe('User Registration Flow', () => {
+  // THIS FILE MAKES ME SO ANGRY. IT TOOK SO LONG FOR THE WEB APP TO EVEN LOAD ON THE JEST + PUPPETER TEST ENVIRONMENT.
+  // AND IT TURNED OUT THAT THE ERROR WAS DUE THE CONFIGURATION FILES
   // Increase timeout for this test suite as E2E actions can be slow
   jest.setTimeout(60000);
 
@@ -33,6 +35,9 @@ describe('User Registration Flow', () => {
     const prevButton = await page.locator("::-p-text(← Previous)");
     await prevButton.click();
 
+    // Prompt: In my web app, I pressed "← Previous" to change the date on my web application to yesterday's date.
+    // How can I verify in my puppeteer test that the date has changed to yesterday's date?
+    // Generated code:
     const now = new Date();
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -48,6 +53,7 @@ describe('User Registration Flow', () => {
     });
 
     await page.waitForSelector(`::-p-text(${expectedText})`);
+    // End of generated code
 
     const foodNameInput = await page.locator('#name');
     await foodNameInput.fill('Test Apple');

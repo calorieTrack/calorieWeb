@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import Analysis from '../Analysis';
 
 describe('Analysis component', () => {
-  test('calculates total, remaining and shows Under Goal status', () => {
+  test('calculates remaining calories need to be consumed and shows Under Goal status', () => {
     const entries = [{ calories: 1500 }];
     const { container } = render(<Analysis entries={entries} />);
 
@@ -37,7 +37,7 @@ describe('Analysis component', () => {
     expect(status).toHaveClass('over');
   });
 
-  test('shows On Track status at 80% boundary (green) and correct percentage', () => {
+  test('shows On Track status and the correct percentage', () => {
     const entries = [{ calories: 1600 }];
     render(<Analysis entries={entries} />);
 
@@ -83,6 +83,12 @@ describe('Analysis component', () => {
     expect(entryCount.textContent).toBe('0');
   });
 
+  // Prompt: I currently have a file that anlayzes the listed food entries with their nutritional information (i.e. calories, protein, fat, carbs).\
+  // It then creates a summary that list the total calories and macroneutrients consumed and shows your progress towards your daily calorie goal.
+  // So far, my tests cover when youre under the goal, over the goal, making good progress to the goal, calculates the total macros consumed and displays it correctly, and display nothing when no data is present.
+  // Please list, but do not code, any additional edge cases that I should consider for better coverage.
+  // IMPORTANT: I only had the LLM list the edge cases without generating any code. The code for the test was written by me.
+  // This was one edge case that I decided to implement:
   test('shows default (0g) stats when entries lack macro data', () => {
     const entries = [{ calories: 500 }]; 
     render(<Analysis entries={entries} />);
@@ -97,6 +103,7 @@ describe('Analysis component', () => {
     expect(screen.queryByText('*Based on entered nutrition data')).not.toBeInTheDocument();
   });
 
+  // This was the other edge case that I decided to implement (code was still written by me):
   test('handles partial macro data', () => {
 
     const entries = [

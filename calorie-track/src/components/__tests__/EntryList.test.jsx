@@ -64,6 +64,11 @@ describe('EntryList component', () => {
     expect(onDelete).toHaveBeenCalledWith('2');
   });
 
+  // Prompt: I currently have a file that lists food entries with their nutritional information (i.e. calories, protein, fat, carbs).
+  // So far, my tests cover when there are no entries to list and renders an entry with complete data.
+  // Please list, but do not code, any additional edge cases that I should consider for better coverage.
+  // IMPORTANT: I only had the LLM list the edge cases without generating any code. The code for the test was written by me.
+  // This was the edge case that I decided to implement:
   test('handles data that has null values correctly', () => {
     const onEdit = jest.fn();
     const onDelete = jest.fn();

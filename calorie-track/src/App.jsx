@@ -247,7 +247,7 @@ function App() {
       )}
 
       {showTrends ? (
-        <HistoricalTrends calorieGoal={calorieGoal} />
+        <HistoricalTrends user={user} calorieGoal={calorieGoal} />
       ) : (
         <>
           <DateSelector selectedDate={selectedDate} onDateChange={setSelectedDate} />

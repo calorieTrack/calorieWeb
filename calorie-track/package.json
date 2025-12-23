@@ -18,7 +18,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "firebase": "^12.6.0",
     "install": "^0.13.0",
-    "npm": "^11.6.4",
+    "npm": "^11.7.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "recharts": "^3.5.1"

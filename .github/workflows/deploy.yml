@@ -31,6 +31,7 @@ jobs:
         working-directory: backend.firebase
 
       - name: Create backend .env file
+        if: github.actor != 'dependabot[bot]'
         run: |
           cat << 'EOF' > .env
           ${{ secrets.BACKEND_ENV }}
@@ -38,6 +39,7 @@ jobs:
         working-directory: backend.firebase
 
       - name: Start backend server and wait for ready
+        if: github.actor != 'dependabot[bot]'
         run: |
           cd backend.firebase
           nohup npm start > backend.log 2>&1 &
@@ -53,6 +55,7 @@ jobs:
           VITE_API_URL: http://localhost:4000
 
       - name: Run e2e tests
+        if: github.actor != 'dependabot[bot]'
         run: npm run test:e2e --if-present
         working-directory: calorie-track
         env:

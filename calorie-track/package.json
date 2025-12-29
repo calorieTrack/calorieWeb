@@ -16,7 +16,7 @@
   "dependencies": {
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
-    "firebase": "^12.6.0",
+    "firebase": "^12.7.0",
     "install": "^0.13.0",
     "npm": "^11.7.0",
     "react": "^19.2.1",

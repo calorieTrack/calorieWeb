@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^1.34.0",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "firebase": "^12.7.0",

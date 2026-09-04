@@ -4,15 +4,21 @@
  */
 import { GoogleGenAI } from "@google/genai";
 
-// The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({});
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+let aiClient = null;
 
-export const pollSuggestions = async (nutritionData) => {
+const getAiClient = () => {
   if (!GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY not configured');
-  }  
+  }
+  if (!aiClient) {
+    aiClient = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  }
+  return aiClient;
+};
+
+export const pollSuggestions = async (nutritionData) => {
+  const ai = getAiClient();
   const prompt = `You are a nutritionist assistant. You are given a summary of a user's nutrition data and must return a JSON object only (no prose, no markdown, no HTML). The JSON must be valid and parsable by JSON.parse(). Do NOT include any surrounding text or commentary. DO NOT WRAP in code blocks.
 
 Input summary:
